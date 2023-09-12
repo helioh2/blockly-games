@@ -47,18 +47,34 @@ BlocklyGames.html.headerBar = function(ij, appName, levelLinkSuffix,
   if (farLeftHtml) {
     farLeftHtml = ' &nbsp; ' + farLeftHtml;
   }
+
+  let projectName = `
+    &nbsp;
+    <input type="text" id="projectName" placeholder="Digite o nome do projeto"/>
+  `;
+
+  let saveButton = `
+  &nbsp;
+  <button id="saveButton" title="Baixar (salvar) projeto.">
+    <img src="common/save.svg">
+  </button>
+  `;
+
+  let loadButton = `
+    &nbsp;
+    <input type="file" id="loadButton" title="Carregar projeto de arquivo." hidden/>
+    <label style="padding: 0.5rem;border-radius: 0.3rem;cursor: pointer;" for="loadButton"><img src="common/load.svg"></label>  
+    
+  `;
+
   return `
 <table width="100%">
   <tr>
-    <td>
-      <h1>
-        ${BlocklyGames.html.titleSpan_(ij, appName)}
-        ${ij.level ? BlocklyGames.html.levelLinks_(ij, levelLinkSuffix) : ''}
-      </h1>
-    </td>
     <td id="header_cta" class="farSide">
+      ${projectName}
+      ${saveButton}
+      ${loadButton}
       <select id="languageMenu"></select>
-      ${linkButton}
       ${helpButton}
       ${farLeftHtml}
     </td>

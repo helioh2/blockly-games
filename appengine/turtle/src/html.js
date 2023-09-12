@@ -138,9 +138,7 @@ Turtle.html.gallery_ = function(lang) {
  * @private
  */
 Turtle.html.toolbox_ = function(level) {
-  let xml;
-  if (level === 10) {
-    xml = `
+  let xml = `
 <category name="${BlocklyGames.getMsg('Games.turtle', true)}">
   <block type="turtle_move">
     <value name="VALUE">
@@ -386,31 +384,6 @@ Turtle.html.toolbox_ = function(level) {
 <category name="${BlocklyGames.getMsg('Games.catVariables', true)}" custom="VARIABLE"></category>
 <category name="${BlocklyGames.getMsg('Games.catProcedures', true)}" custom="PROCEDURE"></category>
 `;
-  } else {
-    const penBlock = level > 3 ? '<block type="turtle_pen"></block>' : '';
-    const colourCat = level > 2 ? `
-<category name="${BlocklyGames.getMsg('Games.catColour', true)}">
-  <block type="turtle_colour_internal"></block>
-</category>
-` : '';
-    xml = `
-<category name="${BlocklyGames.getMsg('Games.turtle', true)}">
-  <block type="turtle_move_internal">
-    <field name="VALUE">100</field>
-  </block>
-  <block type="turtle_turn_internal">
-    <field name="VALUE">90</field>
-  </block>
-  ${penBlock}
-</category>
-${colourCat}
-<category name="${BlocklyGames.getMsg('Games.catLoops', true)}">
-  <block type="turtle_repeat_internal">
-    <field name="TIMES">4</field>
-  </block>
-</category>
-`;
-  }
   return `<xml id="toolbox" xmlns="https://developers.google.com/blockly/xml">${xml}</xml>`;
 };
 

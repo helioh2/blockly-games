@@ -165,6 +165,10 @@ function init() {
   BlocklyGames.bindClick('runButton', runButtonClick);
   BlocklyGames.bindClick('resetButton', resetButtonClick);
 
+  BlocklyGames.bindClick('saveButton', saveButtonClick);
+  document.getElementById('loadButton')
+    .addEventListener('change', loadButtonClick, false);
+
   // Preload the win sound.
   BlocklyInterface.workspace.getAudioManager().load(
       ['turtle/win.mp3', 'turtle/win.ogg'], 'win');
@@ -571,6 +575,55 @@ function resetButtonClick(e) {
   // Image cleared; prevent user from submitting to gallery.
   canSubmit = false;
 }
+
+
+/**
+ * Click the save button.
+ */
+function saveButtonClick(e) {
+
+  // Prevent double-clicks or double-taps.
+  if (BlocklyInterface.eventSpam(e)) {
+    return;
+  }
+
+  let fileName = BlocklyGames.getElementById("projectName").value;
+  if (!fileName) {
+    fileName = "turtle-project";
+  }
+  fileName += ".xml"
+
+  let xml = Blockly.Xml.workspaceToDom(BlocklyInterface.workspace);
+  let text = Blockly.Xml.domToText(xml);
+
+  let a = document.createElement('a');
+  a.style.display = 'none';
+  a.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(text);
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+};
+
+
+/**
+* Click the load button. 
+*/
+function loadButtonClick(e) {
+
+  let file = e.target.files[0];
+  if (!file) {
+    return;
+  }
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var contents = e.target.result;
+    var xml = Blockly.Xml.textToDom(contents);
+    Blockly.Xml.domToWorkspace(xml, BlocklyInterface.workspace);
+  };
+  reader.readAsText(file);
+};
+
+
 
 /**
  * Inject the Turtle API into a JavaScript interpreter.

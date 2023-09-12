@@ -1,6 +1,6 @@
 {
 	"@metadata": {
-		"lastupdated": "2022-09-06 03:50:28.039245",
+		"lastupdated": "2023-09-12 13:37:13.589381",
 		"locale": "en",
 		"messagedocumentation": "qqq"
 	},
@@ -120,6 +120,7 @@
 	"Turtle.moveTooltip": "Moves the turtle forward or backward by the specified amount.",
 	"Turtle.moveForward": "move forward by",
 	"Turtle.moveBackward": "move backward by",
+	"Turtle.goto": "go to",
 	"Turtle.turnTooltip": "Turns the turtle left or right by the specified number of degrees.",
 	"Turtle.turnRight": "turn right by",
 	"Turtle.turnLeft": "turn left by",

@@ -153,13 +153,10 @@ function init() {
           '</block>' +
         '</xml>';
   }
-  BlocklyInterface.loadBlocks(defaultXml,
-      BlocklyGames.LEVEL !== BlocklyGames.MAX_LEVEL || transform10);
+  BlocklyInterface.loadBlocks(defaultXml);
 
   ctxDisplay = BlocklyGames.getElementById('display').getContext('2d');
-  ctxAnswer = BlocklyGames.getElementById('answer').getContext('2d');
   ctxScratch = BlocklyGames.getElementById('scratch').getContext('2d');
-  drawAnswer();
   reset();
 
   BlocklyGames.bindClick('runButton', runButtonClick);
@@ -177,166 +174,8 @@ function init() {
   // Lazy-load the syntax-highlighting.
   BlocklyCode.importPrettify();
 
-  BlocklyGames.bindClick('helpButton', showHelp);
-  if (location.hash.length < 2 &&
-      !BlocklyGames.loadFromLocalStorage(BlocklyGames.storageName,
-                                         BlocklyGames.LEVEL)) {
-    setTimeout(showHelp, 1000);
-    if (BlocklyGames.LEVEL === 9) {
-      setTimeout(BlocklyDialogs.abortOffer, 5 * 60 * 1000);
-    }
-  }
-  if (BlocklyGames.LEVEL === 1) {
-    // Previous apps did not have categories.
-    // If the user doesn't find them, point them out.
-    BlocklyInterface.workspace.addChangeListener(watchCategories_);
-  }
 }
 
-/**
- * Transform a program written in level 9 blocks into one written in the more
- * advanced level 10 blocks.
- * @param {string} xml Level 9 blocks in XML as text.
- * @returns {string} Level 10 blocks in XML as text.
- */
-function transform10(xml) {
-  const tree = Blockly.Xml.textToDom(xml);
-  let node = tree;
-  while (node) {
-    if (node.nodeName.toLowerCase() === 'block') {
-      const type = node.getAttribute('type');
-      // Find the last child that's a 'field'.
-      let child = node.lastChild;
-      while (child && child.nodeName.toLowerCase() !== 'field') {
-        child = child.previousSibling;
-      }
-      const childName = child && child.getAttribute('name');
-
-      if (type === 'turtle_colour_internal' && childName === 'COLOUR') {
-        /*
-        Old:
-          <block type="turtle_colour_internal">
-            <field name="COLOUR">#ffff00</field>
-            <next>...</next>
-          </block>
-        New:
-          <block type="turtle_colour">
-            <value name="COLOUR">
-              <shadow type="colour_picker">
-                <field name="COLOUR">#ffff00</field>
-              </shadow>
-            </value>
-            <next>...</next>
-          </block>
-        */
-        node.setAttribute('type', 'turtle_colour');
-        node.removeChild(child);
-        const value = document.createElement('value');
-        value.setAttribute('name', 'COLOUR');
-        node.appendChild(value);
-        const shadow = document.createElement('shadow');
-        shadow.setAttribute('type', 'colour_picker');
-        value.appendChild(shadow);
-        shadow.appendChild(child);
-      }
-
-      if (type === 'turtle_repeat_internal' && childName === 'TIMES') {
-        /*
-        Old:
-          <block type="turtle_repeat_internal">
-            <field name="TIMES">3</field>
-            <statement name="DO">...</statement>
-            <next>...</next>
-          </block>
-        New:
-          <block type="controls_repeat_ext">
-            <value name="TIMES">
-              <shadow type="math_number">
-                <field name="NUM">3</field>
-              </shadow>
-            </value>
-            <statement name="DO">...</statement>
-            <next>...</next>
-          </block>
-        */
-        node.setAttribute('type', 'controls_repeat_ext');
-        node.removeChild(child);
-        const value = document.createElement('value');
-        value.setAttribute('name', 'TIMES');
-        node.appendChild(value);
-        const shadow = document.createElement('shadow');
-        shadow.setAttribute('type', 'math_number');
-        value.appendChild(shadow);
-        child.setAttribute('name', 'NUM');
-        shadow.appendChild(child);
-      }
-
-      if (type === 'turtle_move_internal' && childName === 'VALUE') {
-        /*
-        Old:
-          <block type="turtle_move_internal">
-            <field name="DIR">moveForward</field>
-            <field name="VALUE">50</field>
-            <next>...</next>
-          </block>
-        New:
-          <block type="turtle_move">
-            <field name="DIR">moveForward</field>
-            <value name="VALUE">
-              <shadow type="math_number">
-                <field name="NUM">50</field>
-              </shadow>
-            </value>
-            <next>...</next>
-          </block>
-        */
-        node.setAttribute('type', 'turtle_move');
-        node.removeChild(child);
-        const value = document.createElement('value');
-        value.setAttribute('name', 'VALUE');
-        node.appendChild(value);
-        const shadow = document.createElement('shadow');
-        shadow.setAttribute('type', 'math_number');
-        value.appendChild(shadow);
-        child.setAttribute('name', 'NUM');
-        shadow.appendChild(child);
-      }
-
-      if (type === 'turtle_turn_internal' && childName === 'VALUE') {
-        /*
-        Old:
-          <block type="turtle_move_internal">
-            <field name="DIR">turnRight</field>
-            <field name="VALUE">90</field>
-            <next>...</next>
-          </block>
-        New:
-          <block type="turtle_move">
-            <field name="DIR">turnRight</field>
-            <value name="VALUE">
-              <shadow type="math_number">
-                <field name="NUM">90</field>
-              </shadow>
-            </value>
-            <next>...</next>
-          </block>
-        */
-        node.setAttribute('type', 'turtle_turn');
-        node.removeChild(child);
-        const value = document.createElement('value');
-        value.setAttribute('name', 'VALUE');
-        node.appendChild(value);
-        const shadow = document.createElement('shadow');
-        shadow.setAttribute('type', 'math_number');
-        value.appendChild(shadow);
-        child.setAttribute('name', 'NUM');
-        shadow.appendChild(child);
-      }
-    }
-    node = nextNode(node);
-  }
-  return Blockly.Xml.domToText(tree);
-}
 
 /**
  * Walk from one node to the next in a tree.
@@ -355,42 +194,6 @@ function nextNode(node) {
   return node;
 }
 
-/**
- * Show the help pop-up.
- */
-function showHelp() {
-  const help = BlocklyGames.getElementById('help');
-  const button = BlocklyGames.getElementById('helpButton');
-  const style = {
-    width: '50%',
-    left: '25%',
-    top: '5em',
-  };
-
-  if (BlocklyGames.LEVEL === 3) {
-    const xml = '<xml><block type="turtle_colour_internal" x="5" y="10">' +
-        '<field name="COLOUR">#ffff00</field></block></xml>';
-    BlocklyInterface.injectReadonly('sampleHelp3', xml);
-  } else if (BlocklyGames.LEVEL === 4) {
-    const xml = '<xml><block type="turtle_pen" x="5" y="10"></block></xml>';
-    BlocklyInterface.injectReadonly('sampleHelp4', xml);
-  }
-
-  BlocklyDialogs.showDialog(help, button, true, true, style, hideHelp);
-  BlocklyDialogs.startDialogKeyDown();
-}
-
-/**
- * Hide the help pop-up.
- */
-function hideHelp() {
-  BlocklyDialogs.stopDialogKeyDown();
-  if (BlocklyGames.LEVEL === 1) {
-    // Previous apps did not have categories.
-    // If the user doesn't find them, point them out.
-    setTimeout(showCategoryHelp, 5000);
-  }
-}
 
 /**
  * Show the help pop-up to encourage clicking on the toolbox categories.
@@ -434,16 +237,6 @@ function watchCategories_(event) {
   }
 }
 
-/**
- * On startup draw the expected answer and save it to the answer canvas.
- */
-function drawAnswer() {
-  reset();
-  answer();
-  ctxAnswer.globalCompositeOperation = 'copy';
-  ctxAnswer.drawImage(ctxScratch.canvas, 0, 0);
-  ctxAnswer.globalCompositeOperation = 'source-over';
-}
 
 /**
  * Reset the turtle to the start position, clear the display, and kill any
@@ -459,8 +252,8 @@ function reset() {
 
   // Clear the canvas.
   ctxScratch.canvas.width = ctxScratch.canvas.width;
-  ctxScratch.strokeStyle = '#fff';
-  ctxScratch.fillStyle = '#fff';
+  ctxScratch.strokeStyle = '#000';
+  ctxScratch.fillStyle = '#000';
   ctxScratch.lineWidth = 5;
   ctxScratch.lineCap = 'round';
   ctxScratch.font = 'normal 18pt Arial';
@@ -479,14 +272,8 @@ function display() {
   // Clear the display with black.
   ctxDisplay.beginPath();
   ctxDisplay.rect(0, 0, ctxDisplay.canvas.width, ctxDisplay.canvas.height);
-  ctxDisplay.fillStyle = '#000';
+  ctxDisplay.fillStyle = '#FFF';
   ctxDisplay.fill();
-
-  // Draw the answer layer.
-  ctxDisplay.globalCompositeOperation = 'source-over';
-  ctxDisplay.globalAlpha = 0.2;
-  ctxDisplay.drawImage(ctxAnswer.canvas, 0, 0);
-  ctxDisplay.globalAlpha = 1;
 
   // Draw the user layer.
   ctxDisplay.globalCompositeOperation = 'source-over';
@@ -614,10 +401,10 @@ function loadButtonClick(e) {
   if (!file) {
     return;
   }
-  var reader = new FileReader();
+  let reader = new FileReader();
   reader.onload = function(e) {
-    var contents = e.target.result;
-    var xml = Blockly.Xml.textToDom(contents);
+    let contents = e.target.result;
+    let xml = Blockly.Xml.textToDom(contents);
     Blockly.Xml.domToWorkspace(xml, BlocklyInterface.workspace);
   };
   reader.readAsText(file);
@@ -642,6 +429,11 @@ function initInterpreter(interpreter, globalObject) {
     move(-distance, id);
   };
   wrap('moveBackward');
+
+  wrapper = function(x, y, id) {
+    goto(x, y, id);
+  };
+  wrap('goto');
 
   wrapper = function(angle, id) {
     turn(angle, id);
@@ -753,7 +545,6 @@ function executeChunk_() {
   if (!pause) {
     BlocklyGames.getElementById('spinner').style.visibility = 'hidden';
     BlocklyInterface.workspace.highlightBlock(null);
-    checkAnswer();
     // Image complete; allow the user to submit this image to gallery.
     canSubmit = true;
   }
@@ -794,6 +585,29 @@ function move(distance, opt_id) {
     // WebKit (unlike Gecko) draws nothing for a zero-length line.
     bump = 0.1;
   }
+  if (isPenDown) {
+    ctxScratch.lineTo(turtleX, turtleY + bump);
+    ctxScratch.stroke();
+  }
+  animate(opt_id);
+}
+
+
+/**
+ * Move the turtle to position (x, y)
+ * @param {x} the x-coordinate
+ * @param {y} the y-coordinate
+ * @param {string=} opt_id ID of block.
+ */
+function goto(x, y, opt_id) {
+  if (isPenDown) {
+    ctxScratch.beginPath();
+    ctxScratch.moveTo(turtleX, turtleY);
+  }
+  let bump = 0;
+  turtleX = x + BlocklyGames.getElementById("display").width / 2;
+  turtleY = BlocklyGames.getElementById("display").height / 2 - y;
+
   if (isPenDown) {
     ctxScratch.lineTo(turtleX, turtleY + bump);
     ctxScratch.stroke();
@@ -878,35 +692,6 @@ function drawFont(font, size, style, opt_id) {
   animate(opt_id);
 }
 
-/**
- * Verify if the answer is correct.
- * If so, move on to next level.
- */
-function checkAnswer() {
-  // Compare the Alpha (opacity) byte of each pixel in the user's image and
-  // the sample answer image.
-  const userImage = ctxScratch.getImageData(0, 0, WIDTH, HEIGHT);
-  const answerImage = ctxAnswer.getImageData(0, 0, WIDTH, HEIGHT);
-  const len = Math.min(userImage.data.length, answerImage.data.length);
-  let delta = 0;
-  // Pixels are in RGBA format.  Only check the Alpha bytes.
-  for (let i = 3; i < len; i += 4) {
-    // Check the Alpha byte.
-    if (Math.abs(userImage.data[i] - answerImage.data[i]) > 64) {
-      delta++;
-    }
-  }
-  if (isCorrect(delta)) {
-    BlocklyInterface.saveToLocalStorage();
-    if (BlocklyGames.LEVEL < BlocklyGames.MAX_LEVEL) {
-      // No congrats for last level, it is open ended.
-      BlocklyInterface.workspace.getAudioManager().play('win', 0.5);
-      BlocklyCode.congratulations();
-    }
-  } else {
-    penColour('#ff0000');
-  }
-}
 
 /**
  * Send an image of the canvas to gallery.
@@ -928,191 +713,6 @@ function submitToGallery() {
   BlocklyGallery.showGalleryForm();
 }
 
-/**
- * Sample solutions for each level.
- * To create an answer, just solve the level in Blockly, then paste the
- * resulting JavaScript here, moving any functions to the beginning of
- * this function, and renaming the API functions (e.g. moveForward -> move).
- */
-function answer() {
-  // Helper functions.
-  function drawStar(length) {
-    for (let count = 0; count < 5; count++) {
-      move(length);
-      turn(144);
-    }
-  }
 
-  switch (BlocklyGames.LEVEL) {
-    case 1:
-      // Square.
-      for (let count = 0; count < 4; count++) {
-        move(100);
-        turn(90);
-      }
-      break;
-    case 2:
-      // Pentagon.
-      for (let count = 0; count < 5; count++) {
-        move(100);
-        turn(72);
-      }
-      break;
-    case 3:
-      // Star.
-      penColour('#ffff00');
-      drawStar(100);
-      break;
-    case 4:
-      // Pen up/down.
-      penColour('#ffff00');
-      drawStar(50);
-      penDown(false);
-      move(150);
-      penDown(true);
-      move(20);
-      break;
-    case 5:
-      // Four stars.
-      penColour('#ffff00');
-      for (let count = 0; count < 4; count++) {
-        drawStar(50);
-        penDown(false);
-        move(150);
-        turn(90);
-        penDown(true);
-      }
-      break;
-    case 6:
-      // Three stars and a line.
-      penColour('#ffff00');
-      for (let count = 0; count < 3; count++) {
-        drawStar(50);
-        penDown(false);
-        move(150);
-        turn(120);
-        penDown(true);
-      }
-      penDown(false);
-      turn(-90);
-      move(100);
-      penDown(true);
-      penColour('#ffffff');
-      move(50);
-      break;
-    case 7:
-      // Three stars and 4 lines.
-      penColour('#ffff00');
-      for (let count = 0; count < 3; count++) {
-        drawStar(50);
-        penDown(false);
-        move(150);
-        turn(120);
-        penDown(true);
-      }
-      penDown(false);
-      turn(-90);
-      move(100);
-      penDown(true);
-      penColour('#ffffff');
-      for (let count = 0; count < 4; count++) {
-        move(50);
-        move(-50);
-        turn(45);
-      }
-      break;
-    case 8:
-      // Three stars and a circle.
-      penColour('#ffff00');
-      for (let count = 0; count < 3; count++) {
-        drawStar(50);
-        penDown(false);
-        move(150);
-        turn(120);
-        penDown(true);
-      }
-      penDown(false);
-      turn(-90);
-      move(100);
-      penDown(true);
-      penColour('#ffffff');
-      for (let count = 0; count < 360; count++) {
-        move(50);
-        move(-50);
-        turn(1);
-      }
-      break;
-    case 9:
-      // Three stars and a crescent.
-      penColour('#ffff00');
-      for (let count = 0; count < 3; count++) {
-        drawStar(50);
-        penDown(false);
-        move(150);
-        turn(120);
-        penDown(true);
-      }
-      penDown(false);
-      turn(-90);
-      move(100);
-      penDown(true);
-      penColour('#ffffff');
-      for (let count = 0; count < 360; count++) {
-        move(50);
-        move(-50);
-        turn(1);
-      }
-      turn(120);
-      move(20);
-      penColour('#000000');
-      for (let count = 0; count < 360; count++) {
-        move(50);
-        move(-50);
-        turn(1);
-      }
-      break;
-  }
-}
-
-/**
- * Validate whether the user's answer is correct.
- * @param {number} pixelErrors Number of pixels that are wrong.
- * @returns {boolean} True if the level is solved, false otherwise.
- */
-function isCorrect(pixelErrors) {
-  if (BlocklyGames.LEVEL === BlocklyGames.MAX_LEVEL) {
-    // Any non-null answer is correct.
-    return BlocklyInterface.workspace.getAllBlocks(false).length > 1;
-  }
-  console.log('Pixel errors: ' + pixelErrors);
-  // There's an alternate solution for level 9 that has the moon rotated by
-  // 12 degrees.  Allow that one to pass.
-  // https://groups.google.com/forum/#!topic/blockly-games/xMwt-JHnZGY
-  // There's also an alternate solution for level 8 that has multiple
-  // redraws.  Allow that one to pass too.
-  // https://groups.google.com/g/blockly-games/c/aOq4F5FIK64
-  if (pixelErrors > (BlocklyGames.LEVEL === 9 ? 600 :
-      (BlocklyGames.LEVEL === 8 ? 350 : 100))) {
-    // Too many errors.
-    return false;
-  }
-  const blockCount = BlocklyInterface.workspace.getAllBlocks(false).length;
-  if ((BlocklyGames.LEVEL <= 2 && blockCount > 3) ||
-      (BlocklyGames.LEVEL === 3 && blockCount > 4) ||
-      (BlocklyGames.LEVEL === 5 && blockCount > 10)) {
-    // Use a loop, dummy.
-    const content = BlocklyGames.getElementById('helpUseLoop');
-    const style = {
-      'width': '30%',
-      'left': '35%',
-      'top': '12em',
-    };
-    BlocklyDialogs.showDialog(content, null, false, true, style,
-        BlocklyDialogs.stopDialogKeyDown);
-    BlocklyDialogs.startDialogKeyDown();
-    return false;
-  }
-  return true;
-}
 
 BlocklyGames.callWhenLoaded(init);

@@ -96,6 +96,28 @@ Turtle.Blocks.init = function() {
       "tooltip": BlocklyGames.getMsg('Turtle.moveTooltip', false),
     },
 
+    // Block for go to.
+    {
+      "type": "turtle_goto",
+      "message0": BlocklyGames.getMsg('Turtle.goto', false)+"%1%2",
+      "args0": [
+        {
+          "type": "input_value",
+          "name": "VALUE_X",
+          "check": "Number",
+        },
+        {
+          "type": "input_value",
+          "name": "VALUE_Y",
+          "check": "Number",
+        },
+      ],
+      "previousStatement": null,
+      "nextStatement": null,
+      "colour": HUE,
+      "tooltip": BlocklyGames.getMsg('Turtle.moveTooltip', false),
+    },
+
     // Block for moving forward or backwards (internal distance).
     {
       "type": "turtle_move_internal",
@@ -371,6 +393,20 @@ Blockly.JavaScript['turtle_move'] = function(block) {
   return `${block.getFieldValue('DIR')}(${value}, 'block_id_${block.id}');\n`;
 };
 
+
+Blockly.JavaScript['turtle_goto'] = function(block) {
+  // Generate JavaScript for moving forward or backwards (external distance).
+  const valueX = Blockly.JavaScript.valueToCode(block, 'VALUE_X',
+      Blockly.JavaScript.ORDER_COMMA) || '0';
+  const valueY = Blockly.JavaScript.valueToCode(block, 'VALUE_Y',
+      Blockly.JavaScript.ORDER_COMMA) || '0';
+  console.log(valueX);
+  console.log(valueY);
+  return `goto(${valueX}, ${valueY},  'block_id_${block.id}');\n`;
+};
+
+
+
 Blockly.JavaScript['turtle_move_internal'] = function(block) {
   // Generate JavaScript for moving forward or backwards (internal distance).
   const value = Number(block.getFieldValue('VALUE'));
@@ -405,7 +441,7 @@ Blockly.JavaScript['turtle_pen'] = function(block) {
 Blockly.JavaScript['turtle_colour'] = function(block) {
   // Generate JavaScript for setting the colour (external colour).
   const colour = Blockly.JavaScript.valueToCode(block, 'COLOUR',
-      Blockly.JavaScript.ORDER_COMMA) || '\'#000000\'';
+      Blockly.JavaScript.ORDER_COMMA) || '\'#FFFFFF\'';
   return `penColour(${colour}, 'block_id_${block.id}');\n`;
 };
 

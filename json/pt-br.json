@@ -140,6 +140,7 @@
 	"Turtle.moveTooltip": "Move a tartaruga para frente ou para trás a quantidade especificada.",
 	"Turtle.moveForward": "avançar",
 	"Turtle.moveBackward": "mover para trás",
+	"Turtle.goto": "vai para",
 	"Turtle.turnTooltip": "Gira a tartaruga para esquerda ou direita de acordo com o número de graus especificado.",
 	"Turtle.turnRight": "vire à direita",
 	"Turtle.turnLeft": "vire à esquerda",

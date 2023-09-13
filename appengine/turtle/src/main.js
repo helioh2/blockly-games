@@ -436,6 +436,12 @@ function initInterpreter(interpreter, globalObject) {
   wrap('goto');
 
   wrapper = function(angle, id) {
+    setDirection(angle, id);
+  };
+  wrap('setDirection');
+
+
+  wrapper = function(angle, id) {
     turn(angle, id);
   };
   wrap('turnRight');
@@ -614,6 +620,18 @@ function goto(x, y, opt_id) {
   }
   animate(opt_id);
 }
+
+/**
+ * Set turtle direction
+ * @param {number} angle Degrees to turn clockwise.
+ * @param {string=} opt_id ID of block.
+ */
+function setDirection(angle, opt_id) {
+  turtleHeading = BlocklyGames.normalizeAngle(-angle+90);
+  animate(opt_id);
+}
+
+
 
 /**
  * Turn the turtle left or right.

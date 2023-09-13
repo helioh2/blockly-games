@@ -166,6 +166,13 @@ Turtle.html.toolbox_ = function(level) {
       </shadow>
     </value>
   </block>
+  <block type="turtle_direction">
+    <value name="VALUE">
+      <shadow type="math_number">
+        <field name="NUM">90</field>
+      </shadow>
+    </value>
+  </block>
   <block type="turtle_width">
     <value name="WIDTH">
       <shadow type="math_number">

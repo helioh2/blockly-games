@@ -464,8 +464,20 @@
     "msg": "move backward by"
   },
   "Turtle.goto": {
-    "desc": "[[Translating:Blockly#Drop-Down_Menus dropdown]] - Infinitive or imperative of a verb telling a turtle to move (walk) in the direction opposite to where he/she is facing.  This is followed by a number indicating how far (how many pixels) to go.  Prefer a translation that has text in common with the translation of 'move forward'.",
+    "desc": "[[Translating:Blockly#Drop-Down_Menus dropdown]] - Infinitive or imperative of a verb telling a turtle to move (walk) directly to position x and y.  Prefer a translation that has text in common with the translation of 'go to'.",
     "msg": "go to"
+  },
+  "Turtle.gotoTooltip": {
+    "desc": "tooltip - In this and subsequent messages, 'turtle' refers to a stylized turtle on the screen to represent a position and direction.  This imaginary turtle is carrying a pen in its tail, so moving the turtle draws a line (or curve, etc.).  You are encouraged to play with the [https://blockly.games/turtle Turtle application] before doing this translation.",
+    "msg": "Moves the turtle directly to the x and y coordinates."
+  },
+  "Turtle.direction": {
+    "desc": "[[Translating:Blockly#Drop-Down_Menus dropdown]] - Infinitive or imperative of a verb telling a turtle to point to the given direction (defined by an angle in degrees).  Prefer a translation that has text in common with the translation of 'direction' or 'point to'.",
+    "msg": "point in direction"
+  },
+  "Turtle.directionTooltip": {
+    "desc": "tooltip - In this and subsequent messages, 'turtle' refers to a stylized turtle on the screen to represent a position and direction.  This imaginary turtle is carrying a pen in its tail, so moving the turtle draws a line (or curve, etc.).  You are encouraged to play with the [https://blockly.games/turtle Turtle application] before doing this translation.",
+    "msg": "Turns the turtle to the direction (angle) given."
   },
   "Turtle.turnTooltip": {
     "desc": "'Left' means counter-clockwise/anti-clockwise, and 'right' means clockwise.",

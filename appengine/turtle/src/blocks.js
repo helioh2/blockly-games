@@ -115,8 +115,9 @@ Turtle.Blocks.init = function() {
       "previousStatement": null,
       "nextStatement": null,
       "colour": HUE,
-      "tooltip": BlocklyGames.getMsg('Turtle.moveTooltip', false),
+      "tooltip": BlocklyGames.getMsg('Turtle.gotoTooltip', false),
     },
+    
 
     // Block for moving forward or backwards (internal distance).
     {
@@ -144,6 +145,25 @@ Turtle.Blocks.init = function() {
       "colour": HUE,
       "tooltip": BlocklyGames.getMsg('Turtle.moveTooltip', false),
     },
+
+
+     // Block for direction.
+     {
+      "type": "turtle_direction",
+      "message0": BlocklyGames.getMsg('Turtle.direction', false)+"%1",
+      "args0": [
+        {
+          "type": "input_value",
+          "name": "VALUE",
+          "check": "Number",
+        }
+      ],
+      "previousStatement": null,
+      "nextStatement": null,
+      "colour": HUE,
+      "tooltip": BlocklyGames.getMsg('Turtle.directionTooltip', false),
+    },
+
 
     // Block for turning left or right (external angle).
     {
@@ -400,8 +420,6 @@ Blockly.JavaScript['turtle_goto'] = function(block) {
       Blockly.JavaScript.ORDER_COMMA) || '0';
   const valueY = Blockly.JavaScript.valueToCode(block, 'VALUE_Y',
       Blockly.JavaScript.ORDER_COMMA) || '0';
-  console.log(valueX);
-  console.log(valueY);
   return `goto(${valueX}, ${valueY},  'block_id_${block.id}');\n`;
 };
 
@@ -412,6 +430,17 @@ Blockly.JavaScript['turtle_move_internal'] = function(block) {
   const value = Number(block.getFieldValue('VALUE'));
   return `${block.getFieldValue('DIR')}(${value}, 'block_id_${block.id}');\n`;
 };
+
+
+
+Blockly.JavaScript['turtle_direction'] = function(block) {
+  // Generate JavaScript for moving forward or backwards (external distance).
+  const value = Blockly.JavaScript.valueToCode(block, 'VALUE',
+      Blockly.JavaScript.ORDER_COMMA) || '0';
+  return `setDirection(${value}, 'block_id_${block.id}');\n`;
+};
+
+
 
 Blockly.JavaScript['turtle_turn'] = function(block) {
   // Generate JavaScript for turning left or right (external angle).

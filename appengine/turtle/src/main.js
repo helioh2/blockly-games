@@ -84,23 +84,25 @@ function init() {
 
   // Render the HTML.
   document.body.innerHTML = Turtle.html.start(
-      {lang: BlocklyGames.LANG,
-       level: BlocklyGames.LEVEL,
-       maxLevel: BlocklyGames.MAX_LEVEL,
-       html: BlocklyGames.IS_HTML});
+    {
+      lang: BlocklyGames.LANG,
+      level: BlocklyGames.LEVEL,
+      maxLevel: BlocklyGames.MAX_LEVEL,
+      html: BlocklyGames.IS_HTML
+    });
 
   BlocklyInterface.init(BlocklyGames.getMsg('Games.turtle', false));
 
   const rtl = BlocklyGames.IS_RTL;
   const blocklyDiv = BlocklyGames.getElementById('blockly');
   const visualization = BlocklyGames.getElementById('visualization');
-  const onresize = function(_e) {
+  const onresize = function (_e) {
     const top = visualization.offsetTop;
     blocklyDiv.style.top = Math.max(10, top - window.pageYOffset) + 'px';
     blocklyDiv.style.left = rtl ? '10px' : '420px';
     blocklyDiv.style.width = (window.innerWidth - 440) + 'px';
   };
-  window.addEventListener('scroll', function() {
+  window.addEventListener('scroll', function () {
     onresize(null);
     Blockly.svgResize(BlocklyInterface.workspace);
   });
@@ -110,20 +112,22 @@ function init() {
   if (BlocklyGames.LEVEL < BlocklyGames.MAX_LEVEL) {
     Blockly.FieldColour.COLUMNS = 3;
     Blockly.FieldColour.COLOURS =
-        ['#ff0000', '#ffcc33', '#ffff00',
-         '#009900', '#3333ff', '#cc33cc',
-         '#ffffff', '#999999', '#000000'];
+      ['#ff0000', '#ffcc33', '#ffff00',
+        '#009900', '#3333ff', '#cc33cc',
+        '#ffffff', '#999999', '#000000'];
   }
 
   BlocklyInterface.injectBlockly(
-      {'rtl': rtl,
-       'trashcan': true,
-       'zoom': BlocklyGames.LEVEL === BlocklyGames.MAX_LEVEL ?
-           {'controls': true, 'wheel': true} : null});
+    {
+      'rtl': rtl,
+      'trashcan': true,
+      'zoom': BlocklyGames.LEVEL === BlocklyGames.MAX_LEVEL ?
+        { 'controls': true, 'wheel': true } : null
+    });
   // Prevent collisions with user-defined functions or variables.
   Blockly.JavaScript.addReservedWords('moveForward,moveBackward,' +
-      'turnRight,turnLeft,penUp,penDown,penWidth,penColour,' +
-      'hideTurtle,showTurtle,print,font');
+    'turnRight,turnLeft,penUp,penDown,penWidth,penColour,' +
+    'hideTurtle,showTurtle,print,font');
 
   if (BlocklyGames.getElementById('submitButton')) {
     BlocklyGames.bindClick('submitButton', submitToGallery);
@@ -136,22 +140,22 @@ function init() {
   let defaultXml;
   if (BlocklyGames.LEVEL === BlocklyGames.MAX_LEVEL) {
     defaultXml =
-        '<xml>' +
-          '<block type="turtle_move" x="70" y="70">' +
-            '<value name="VALUE">' +
-              '<shadow type="math_number">' +
-                '<field name="NUM">10</field>' +
-              '</shadow>' +
-            '</value>' +
-          '</block>' +
-        '</xml>';
+      '<xml>' +
+      '<block type="turtle_move" x="70" y="70">' +
+      '<value name="VALUE">' +
+      '<shadow type="math_number">' +
+      '<field name="NUM">10</field>' +
+      '</shadow>' +
+      '</value>' +
+      '</block>' +
+      '</xml>';
   } else {
     defaultXml =
-        '<xml>' +
-          '<block type="turtle_move_internal" x="70" y="70">' +
-            '<field name="VALUE">100</field>' +
-          '</block>' +
-        '</xml>';
+      '<xml>' +
+      '<block type="turtle_move_internal" x="70" y="70">' +
+      '<field name="VALUE">100</field>' +
+      '</block>' +
+      '</xml>';
   }
   BlocklyInterface.loadBlocks(defaultXml);
 
@@ -168,7 +172,7 @@ function init() {
 
   // Preload the win sound.
   BlocklyInterface.workspace.getAudioManager().load(
-      ['turtle/win.mp3', 'turtle/win.ogg'], 'win');
+    ['turtle/win.mp3', 'turtle/win.ogg'], 'win');
   // Lazy-load the JavaScript interpreter.
   BlocklyCode.importInterpreter();
   // Lazy-load the syntax-highlighting.
@@ -194,48 +198,6 @@ function nextNode(node) {
   return node;
 }
 
-
-/**
- * Show the help pop-up to encourage clicking on the toolbox categories.
- */
-function showCategoryHelp() {
-  if (categoryClicked_ || BlocklyDialogs.isDialogVisible_) {
-    return;
-  }
-  const help = BlocklyGames.getElementById('helpToolbox');
-  const style = {
-    width: '25%',
-    top: '3.3em',
-  };
-  if (BlocklyGames.IS_RTL) {
-    style.right = '525px';
-  } else {
-    style.left = '525px';
-  }
-  const origin = BlocklyGames.getElementById(':0');  // Toolbox's tree root.
-  BlocklyDialogs.showDialog(help, origin, true, false, style, null);
-}
-
-
-/**
- * Flag indicating if a toolbox category has been clicked yet.
- * Level one only.
- * @private
- */
-let categoryClicked_ = false;
-
-/**
- * Monitor to see if the user finds the categories in level one.
- * @param {!Blockly.Events.Abstract} event Custom data for event.
- * @private
- */
-function watchCategories_(event) {
-  if (event.type === Blockly.Events.TOOLBOX_ITEM_SELECT) {
-    categoryClicked_ = true;
-    BlocklyDialogs.hideDialog(false);
-    BlocklyInterface.workspace.removeChangeListener(watchCategories_);
-  }
-}
 
 
 /**
@@ -316,7 +278,7 @@ function display() {
     ctxDisplay.moveTo(tipX, tipY);
     ctxDisplay.lineTo(leftX, leftY);
     ctxDisplay.bezierCurveTo(leftControlX, leftControlY,
-        rightControlX, rightControlY, rightX, rightY);
+      rightControlX, rightControlY, rightX, rightY);
     ctxDisplay.closePath();
     ctxDisplay.fill();
   }
@@ -402,7 +364,7 @@ function loadButtonClick(e) {
     return;
   }
   let reader = new FileReader();
-  reader.onload = function(e) {
+  reader.onload = function (e) {
     let contents = e.target.result;
     let xml = Blockly.Xml.textToDom(contents);
     Blockly.Xml.domToWorkspace(xml, BlocklyInterface.workspace);
@@ -420,80 +382,80 @@ function loadButtonClick(e) {
 function initInterpreter(interpreter, globalObject) {
   // API
   let wrapper;
-  wrapper = function(distance, id) {
+  wrapper = function (distance, id) {
     move(distance, id);
   };
   wrap('moveForward');
 
-  wrapper = function(distance, id) {
+  wrapper = function (distance, id) {
     move(-distance, id);
   };
   wrap('moveBackward');
 
-  wrapper = function(x, y, id) {
+  wrapper = function (x, y, id) {
     goto(x, y, id);
   };
   wrap('goto');
 
-  wrapper = function(angle, id) {
+  wrapper = function (angle, id) {
     setDirection(angle, id);
   };
   wrap('setDirection');
 
 
-  wrapper = function(angle, id) {
+  wrapper = function (angle, id) {
     turn(angle, id);
   };
   wrap('turnRight');
 
-  wrapper = function(angle, id) {
+  wrapper = function (angle, id) {
     turn(-angle, id);
   };
   wrap('turnLeft');
 
-  wrapper = function(id) {
+  wrapper = function (id) {
     penDown(false, id);
   };
   wrap('penUp');
 
-  wrapper = function(id) {
+  wrapper = function (id) {
     penDown(true, id);
   };
   wrap('penDown');
 
-  wrapper = function(width, id) {
+  wrapper = function (width, id) {
     penWidth(width, id);
   };
   wrap('penWidth');
 
-  wrapper = function(colour, id) {
+  wrapper = function (colour, id) {
     penColour(colour, id);
   };
   wrap('penColour');
 
-  wrapper = function(id) {
+  wrapper = function (id) {
     isVisible(false, id);
   };
   wrap('hideTurtle');
 
-  wrapper = function(id) {
+  wrapper = function (id) {
     isVisible(true, id);
   };
   wrap('showTurtle');
 
-  wrapper = function(text, id) {
+  wrapper = function (text, id) {
     drawPrint(text, id);
   };
   wrap('print');
 
-  wrapper = function(font, size, style, id) {
+  wrapper = function (font, size, style, id) {
     drawFont(font, size, style, id);
   };
   wrap('font');
 
   function wrap(name) {
     interpreter.setProperty(globalObject, name,
-        interpreter.createNativeFunction(wrapper, false));
+      interpreter.createNativeFunction(wrapper, false));
   }
 }
 
@@ -578,24 +540,47 @@ function animate(id) {
  * @param {string=} opt_id ID of block.
  */
 function move(distance, opt_id) {
-  if (isPenDown) {
-    ctxScratch.beginPath();
-    ctxScratch.moveTo(turtleX, turtleY);
-  }
+  let xInic = turtleX;
+  let yInic = turtleY;
   let bump = 0;
-  if (distance) {
-    const radians = Blockly.utils.math.toRadians(turtleHeading);
-    turtleX += distance * Math.sin(radians);
-    turtleY -= distance * Math.cos(radians);
-  } else {
-    // WebKit (unlike Gecko) draws nothing for a zero-length line.
-    bump = 0.1;
+
+  const radians = Blockly.utils.math.toRadians(turtleHeading);
+  let xFinal = turtleX + distance * Math.sin(radians);
+  let yFinal = turtleY - distance * Math.cos(radians);
+
+  const totalTime = 1000 * Math.pow(1 - speedSlider.getValue() + 0.1, 2);
+  const n = Math.log(totalTime)
+  const timeStep = totalTime / n;
+  pause = totalTime + timeStep;
+
+  let count = 0;
+
+  let time = 0.0;
+
+  const loop = () => {
+
+    ctxScratch.moveTo(turtleX, turtleY);
+
+    turtleX += (xFinal - xInic) / n;
+    turtleY += (yFinal - yInic) / n;
+    time = time + timeStep;
+
+    if (isPenDown) {
+      ctxScratch.lineTo(turtleX, turtleY + bump);
+      ctxScratch.stroke();
+    }
+
+    display();
+    BlocklyCode.highlight(opt_id);
+
+    if (++count < n) {
+      setTimeout(loop, timeStep);
+    }
+
   }
-  if (isPenDown) {
-    ctxScratch.lineTo(turtleX, turtleY + bump);
-    ctxScratch.stroke();
-  }
-  animate(opt_id);
+
+  setTimeout(loop(), 1);
+
 }
 
 
@@ -627,7 +612,7 @@ function goto(x, y, opt_id) {
  * @param {string=} opt_id ID of block.
  */
 function setDirection(angle, opt_id) {
-  turtleHeading = BlocklyGames.normalizeAngle(-angle+90);
+  turtleHeading = BlocklyGames.normalizeAngle(-angle + 90);
   animate(opt_id);
 }
 

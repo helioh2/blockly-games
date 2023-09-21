@@ -8,39 +8,10 @@ REQUIRED_BINS = svn wget java python
 # Rules
 ##############################
 
-all: deps games
+all: deps index
 
 index: common
 	python build/compress.py index
-
-puzzle: common
-	python build/compress.py puzzle
-
-maze: common
-	python build/compress.py maze
-
-bird: common
-	python build/compress.py bird
-
-turtle: common
-	python build/compress.py turtle
-
-movie: common
-	python build/compress.py movie
-
-music: common
-	python build/compress.py music
-
-pond-tutor: common
-	python build/compress.py pond/tutor
-
-pond-duck: common
-	python build/compress.py pond/duck
-
-gallery: common
-	python build/compress.py gallery
-
-games: index puzzle maze bird turtle movie music pond-tutor pond-duck gallery
 
 common:
 	@echo "Converting messages.js to JSON for Translatewiki."
@@ -56,18 +27,6 @@ deps:
 	wget -N https://unpkg.com/google-closure-compiler-java/compiler.jar;
 	mv -f compiler.jar build/third-party-downloads/closure-compiler.jar;
 
-	mkdir -p appengine/third-party
-	wget -N https://unpkg.com/@babel/standalone@7.14.8/babel.min.js
-	mv babel.min.js appengine/third-party/
-	@# GitHub doesn't support git archive, so download files using svn.
-	svn export --force https://github.com/ajaxorg/ace-builds/trunk/src-min-noconflict/ appengine/third-party/ace
-	mkdir -p appengine/third-party/blockly
-	svn export --force https://github.com/NeilFraser/blockly-for-BG/trunk/ appengine/third-party/blockly
-	svn export --force https://github.com/CreateJS/SoundJS/trunk/lib/ appengine/third-party/SoundJS
-	cp third-party/base.js appengine/third-party/
-	cp -R third-party/soundfonts appengine/third-party/
-
-	svn export --force https://github.com/NeilFraser/JS-Interpreter/trunk/ appengine/third-party/JS-Interpreter
 	@# Compile JS-Interpreter using SIMPLE_OPTIMIZATIONS because the Music game needs to mess with the stack.
 	java -jar build/third-party-downloads/closure-compiler.jar\
 	  --language_out ECMASCRIPT5\

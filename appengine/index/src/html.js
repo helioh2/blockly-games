@@ -5,14 +5,16 @@
  */
 
 /**
- * @fileoverview HTML for index page.
+ * @fileoverview HTML for Turtle game.
  * @author fraser@google.com (Neil Fraser)
  */
 'use strict';
 
-goog.provide('Index.html');
+goog.provide('Turtle.html');
 
+goog.require('Blockly.Msg');
 goog.require('BlocklyGames');
+goog.require('BlocklyGames.html');
 
 
 /**
@@ -20,71 +22,549 @@ goog.require('BlocklyGames');
  * @param {!Object} ij Injected options.
  * @returns {string} HTML.
  */
-Index.html.start = function(ij) {
+Turtle.html.start = function(ij) {
   return `
-<div id="header">
-  <img id="banner" src="index/title.svg" height=40 width=244 alt="Blockly Games">
-  <div id="subtitle">${BlocklyGames.getMsg('Index.subTitle', true)}&nbsp;
-    <a href="about${ij.html ? '.html' : ''}?lang=${ij.lang}">${BlocklyGames.getMsg('Index.moreInfo', true)}</a>
-  </div>
+${BlocklyGames.html.headerBar(ij, BlocklyGames.getMsg('Games.turtle', true), '', true, true, '')}
+
+<div id="visualization">
+  <canvas id="scratch" width=400 height=400 style="display: none"></canvas>
+  <canvas id="answer" width=400 height=400 style="display: none"></canvas>
+  <canvas id="display" width=400 height=400></canvas>
 </div>
-<svg height="100%" width="100%" version="1.1"
-    xmlns="http://www.w3.org/2000/svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink">
-  <g transform="translate(-150,-60)">
-    <svg height="100%" width="100%" version="1.1"
-        xmlns="http://www.w3.org/2000/svg"
-        xmlns:xlink="http://www.w3.org/1999/xlink"
-        viewBox="0 0 100 100" preserveAspectRatio="none"
-        x=150 y=60>
-      <path id="path" d="M 10,15 C 15,60 35,100 50,70 S 80,20 90,85"
-        ${ij.rtl ? 'transform="translate(100) scale(-1, 1)"' : ''}
-      />
-    </svg>
-    ${Index.html.appLink_(ij, 'puzzle', 10, 15, 'Games.puzzle')}
-    ${Index.html.appLink_(ij, 'maze', 16, 45, 'Games.maze')}
-    ${Index.html.appLink_(ij, 'bird', 26, 69, 'Games.bird')}
-    ${Index.html.appLink_(ij, 'turtle', 41, 80, 'Games.turtle')}
-    ${Index.html.appLink_(ij, 'movie', 55, 61, 'Games.movie')}
-    ${Index.html.appLink_(ij, 'music', 69, 43, 'Games.music')}
-    ${Index.html.appLink_(ij, 'pond-tutor', 83, 55, 'Games.pondTutor')}
-    ${Index.html.appLink_(ij, 'pond-duck', 90, 85, 'Games.pond')}
-  </g>
-</svg>
-<select id="languageMenu"></select>
-<p id="clearDataPara" style="visibility: hidden">
-  ${BlocklyGames.getMsg('Index.startOver', true)}
-  <button class="secondary" id="clearData">${BlocklyGames.getMsg('Index.clearData', true)}</button>
-</p>
+<table style="padding-top: 1em;">
+  <tr>
+    <td style="width: 190px; text-align: center; vertical-align: top;">
+      <svg
+          id="slider"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:svg="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          version="1.1"
+          width=150
+          height=50>
+        <!-- Slow icon. -->
+        <clipPath id="slowClipPath">
+          <rect width=26 height=12 x=5 y=14 />
+        </clipPath>
+        <image xlink:href="common/icons.png" height=63 width=84 x=-21 y=-10
+            clip-path="url(#slowClipPath)" />
+        <!-- Fast icon. -->
+        <clipPath id="fastClipPath">
+          <rect width=26 height=16 x=120 y=10 />
+        </clipPath>
+        <image xlink:href="common/icons.png" height=63 width=84 x=120 y=-11
+            clip-path="url(#fastClipPath)" />
+      </svg>
+    </td>
+    <td style="width: 15px;">
+      <img id="spinner" style="visibility: hidden;" src="common/loading.gif" loading="lazy" height=15 width=15>
+    </td>
+    <td style="width: 190px; text-align: center">
+      <button id="runButton" class="primary" title="${BlocklyGames.getMsg('Games.runTooltip', true)}">
+        <img src="common/1x1.gif" class="run icon21"> ${BlocklyGames.getMsg('Games.runProgram', true)}
+      </button>
+      <button id="resetButton" class="primary" style="display: none" title="${BlocklyGames.getMsg('Games.resetTooltip', true)}">
+        <img src="common/1x1.gif" class="stop icon21"> ${BlocklyGames.getMsg('Games.resetProgram', true)}
+      </button>
+      <button id="codeButton" class="primary" style="display: none" title="Mostra código em Javascript gerado.">
+        <img src="common/programming.svg">
+      </button>
+    </td>
+  </tr>
+</table>
+
+${(ij.level === 10 && !ij.html) ? Turtle.html.gallery_(ij.lang) : ''}
+
+${Turtle.html.toolbox_(ij.level)}
+<div id="blockly"></div>
+
+${BlocklyGames.html.dialog()}
+${BlocklyGames.html.doneDialog()}
+${BlocklyGames.html.abortDialog()}
+${BlocklyGames.html.storageDialog()}
+
+${Turtle.html.helpDialogs_(ij.level, ij.html)}
+
+<div id="dialogCode" class="dialogHiddenContent" hidden><pre id="containerCode"></pre></div>'
+
 `;
 };
 
 /**
- * Create a link to an app.
- * @param {!Object} ij Injected options.
- * @param {string} app Name of application.
- * @param {number} x Horizontal position of link as percentage.
- * @param {number} y Vertical position of link as percentage.
- * @param {string} msgName Name of text content to place in link.
+ * Gallery view button and submission form.
+ * @param {string} lang ISO language code.
  * @returns {string} HTML.
  * @private
  */
-Index.html.appLink_ = function(ij, app, x, y, msgName) {
+Turtle.html.gallery_ = function(lang) {
   return `
-<svg height=150 width=300 version="1.1"
-    xmlns="http://www.w3.org/2000/svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink"
-    x=${ij.rtl ? 100 - x : x}% y=${y}%>
-  <path d="M 111.11,98.89 A 55 55 0 1 1 188.89,98.89" class="gaugeBack" id="back-${app}" />
-  <g class="icon" id="icon-${app}">
-    <circle cx=150 cy=60 r=50 class="iconBack" />
-    <image xlink:href="index/${app}.png" height=100 width=100 x=100 y=10 />
-    <a xlink:href="${app}${ij.html ? '.html' : ''}?lang=${ij.lang}">
-      <circle cx=150 cy=60 r=50 class="iconBorder" />
-      <path class="gaugeFront" id="gauge-${app}" />
-      <text x=150 y=135>${BlocklyGames.getMsg(msgName, true)}</text>
-    </a>
-  </g>
-</svg>
+<table style="padding-top: 1em; width: 400px;">
+  <tr>
+    <td style="text-align: center;">
+      <form action="/gallery" target="turtle-gallery">
+        <input type="hidden" name="app" value="turtle">
+        <input type="hidden" name="lang" value="${lang}">
+        <button type="submit" title="${BlocklyGames.getMsg('Turtle.galleryTooltip', true)}">
+          <img src="common/1x1.gif" class="gallery icon21"> ${BlocklyGames.getMsg('Turtle.galleryMsg', true)}
+        </button>
+      </form>
+    </td>
+    <td style="text-align: center;">
+      <button id="submitButton" title="${BlocklyGames.getMsg('Turtle.submitTooltip', true)}">
+        <img src="common/1x1.gif" class="camera icon21"> ${BlocklyGames.getMsg('Turtle.submitMsg', true)}
+      </button>
+    </td>
+  </tr>
+</table>
+<div id="galleryDialog" class="dialogHiddenContent">
+    <form id="galleryForm" action="/gallery-api/submit" method="post" onsubmit="return false">
+    <header>${BlocklyGames.getMsg('Turtle.submitTooltip', true)}</header>
+    <canvas id="thumbnail" width=200 height=200></canvas>
+    <input type="hidden" name="app" value="turtle">
+    <input id="galleryThumb" type="hidden" name="thumb">
+    <input id="galleryXml" type="hidden" name="xml">
+    <div>
+      ${BlocklyGames.getMsg('Games.submitTitle', true)}
+      <input id="galleryTitle" type="text" name="title" required>
+    </div>
+
+    <div class="farSide">
+      <button class="addHideHandler" type="button">${BlocklyGames.esc(Blockly.Msg['DIALOG_CANCEL'])}</button>
+      <button id="galleryOk" class="secondary" type="submit">${BlocklyGames.esc(Blockly.Msg['DIALOG_OK'])}</button>
+    </div>
+  </form>
+</div>
+`;
+};
+
+/**
+ * Toolboxes for each level.
+ * @param {number} level Level 1-10.
+ * @returns {string} HTML.
+ * @private
+ */
+Turtle.html.toolbox_ = function(level) {
+  let xml = `
+<category name="${BlocklyGames.getMsg('Games.turtle', true)}">
+  <block type="turtle_move">
+    <value name="VALUE">
+      <shadow type="math_number">
+        <field name="NUM">10</field>
+      </shadow>
+    </value>
+  </block>
+  <block type="turtle_goto">
+    <value name="VALUE_X">
+      <shadow type="math_number">
+        <field name="NUM">0</field>
+      </shadow>
+    </value>
+    <value name="VALUE_Y">
+      <shadow type="math_number">
+        <field name="NUM">0</field>
+      </shadow>
+    </value>
+  </block>
+  <block type="turtle_turn">
+    <value name="VALUE">
+      <shadow type="math_number">
+        <field name="NUM">90</field>
+      </shadow>
+    </value>
+  </block>
+  <block type="turtle_direction">
+    <value name="VALUE">
+      <shadow type="math_number">
+        <field name="NUM">90</field>
+      </shadow>
+    </value>
+  </block>
+  <block type="turtle_width">
+    <value name="WIDTH">
+      <shadow type="math_number">
+        <field name="NUM">1</field>
+      </shadow>
+    </value>
+  </block>
+  <block type="turtle_pen"></block>
+  <block type="turtle_visibility"></block>
+  <block type="turtle_print">
+    <value name="TEXT">
+      <shadow type="text"></shadow>
+    </value>
+  </block>
+  <block type="turtle_font"></block>
+</category>
+<category name="${BlocklyGames.getMsg('Games.catColour', true)}">
+  <block type="turtle_colour">
+    <value name="COLOUR">
+      <shadow type="colour_picker"></shadow>
+    </value>
+  </block>
+  <block type="colour_picker"></block>
+  <block type="colour_random"></block>
+  <block type="colour_rgb">
+    <value name="RED">
+      <shadow type="math_number">
+        <field name="NUM">100</field>
+      </shadow>
+    </value>
+    <value name="GREEN">
+      <shadow type="math_number">
+        <field name="NUM">50</field>
+      </shadow>
+    </value>
+    <value name="BLUE">
+      <shadow type="math_number">
+        <field name="NUM">0</field>
+      </shadow>
+    </value>
+  </block>
+  <block type="colour_blend">
+    <value name="COLOUR1">
+      <shadow type="colour_picker">
+        <field name="COLOUR">#ff0000</field>
+      </shadow>
+    </value>
+    <value name="COLOUR2">
+      <shadow type="colour_picker">
+        <field name="COLOUR">#3333ff</field>
+      </shadow>
+    </value>
+    <value name="RATIO">
+      <shadow type="math_number">
+        <field name="NUM">0.5</field>
+      </shadow>
+    </value>
+  </block>
+</category>
+<category name="${BlocklyGames.getMsg('Games.catLogic', true)}">
+  <block type="controls_if"></block>
+  <block type="logic_compare"></block>
+  <block type="logic_operation"></block>
+  <block type="logic_negate"></block>
+  <block type="logic_boolean"></block>
+  <block type="logic_ternary"></block>
+</category>
+<category name="${BlocklyGames.getMsg('Games.catLoops', true)}">
+  <block type="controls_repeat_ext">
+    <value name="TIMES">
+      <shadow type="math_number">
+        <field name="NUM">10</field>
+      </shadow>
+    </value>
+  </block>
+  <block type="controls_whileUntil"></block>
+  <block type="controls_for">
+    <value name="FROM">
+      <shadow type="math_number">
+        <field name="NUM">1</field>
+      </shadow>
+    </value>
+    <value name="TO">
+      <shadow type="math_number">
+        <field name="NUM">10</field>
+      </shadow>
+    </value>
+    <value name="BY">
+      <shadow type="math_number">
+        <field name="NUM">1</field>
+      </shadow>
+    </value>
+  </block>
+  <block type="controls_flow_statements"></block>
+</category>
+<category name="${BlocklyGames.getMsg('Games.catMath', true)}">
+  <block type="math_number"></block>
+  <block type="math_arithmetic">
+    <value name="A">
+      <shadow type="math_number">
+        <field name="NUM">1</field>
+      </shadow>
+    </value>
+    <value name="B">
+      <shadow type="math_number">
+        <field name="NUM">1</field>
+      </shadow>
+    </value>
+  </block>
+  <block type="math_single">
+    <value name="NUM">
+      <shadow type="math_number">
+        <field name="NUM">9</field>
+      </shadow>
+    </value>
+  </block>
+  <block type="math_trig">
+    <value name="NUM">
+      <shadow type="math_number">
+        <field name="NUM">45</field>
+      </shadow>
+    </value>
+  </block>
+  <block type="math_constant"></block>
+  <block type="math_number_property">
+    <value name="NUMBER_TO_CHECK">
+      <shadow type="math_number">
+        <field name="NUM">0</field>
+      </shadow>
+    </value>
+  </block>
+  <block type="math_round">
+    <value name="NUM">
+      <shadow type="math_number">
+        <field name="NUM">3.1</field>
+      </shadow>
+    </value>
+  </block>
+  <block type="math_modulo">
+    <value name="DIVIDEND">
+      <shadow type="math_number">
+        <field name="NUM">64</field>
+      </shadow>
+    </value>
+    <value name="DIVISOR">
+      <shadow type="math_number">
+        <field name="NUM">10</field>
+      </shadow>
+    </value>
+  </block>
+  <block type="math_constrain">
+    <value name="VALUE">
+      <shadow type="math_number">
+        <field name="NUM">50</field>
+      </shadow>
+    </value>
+    <value name="LOW">
+      <shadow type="math_number">
+        <field name="NUM">1</field>
+      </shadow>
+    </value>
+    <value name="HIGH">
+      <shadow type="math_number">
+        <field name="NUM">100</field>
+      </shadow>
+    </value>
+  </block>
+  <block type="math_random_int">
+    <value name="FROM">
+      <shadow type="math_number">
+        <field name="NUM">1</field>
+      </shadow>
+    </value>
+    <value name="TO">
+      <shadow type="math_number">
+        <field name="NUM">100</field>
+      </shadow>
+    </value>
+  </block>
+  <block type="math_random_float"></block>
+</category>
+<category name="${BlocklyGames.getMsg('Games.catLists', true)}">
+  <block type="lists_create_with">
+    <mutation items="0"></mutation>
+  </block>
+  <block type="lists_create_with"></block>
+  <block type="lists_repeat">
+    <value name="NUM">
+      <shadow type="math_number">
+        <field name="NUM">5</field>
+      </shadow>
+    </value>
+  </block>
+  <block type="lists_length"></block>
+  <block type="lists_isEmpty"></block>
+  <block type="lists_indexOf">
+    <value name="VALUE">
+      <block type="variables_get">
+        <field name="VAR">list</field>
+      </block>
+    </value>
+  </block>
+  <block type="lists_getIndex">
+    <value name="VALUE">
+      <block type="variables_get">
+        <field name="VAR">list</field>
+      </block>
+    </value>
+  </block>
+  <block type="lists_setIndex">
+    <value name="LIST">
+      <block type="variables_get">
+        <field name="VAR">list</field>
+      </block>
+    </value>
+  </block>
+  <block type="lists_getSublist">
+    <value name="LIST">
+      <block type="variables_get">
+        <field name="VAR">list</field>
+      </block>
+    </value>
+  </block>
+  <block type="lists_sort"></block>
+  <block type="lists_reverse"></block>
+</category>
+<category name="${BlocklyGames.getMsg('Games.catText', true)}">
+  <block type="text"></block>
+  <block type="text_join"></block>
+  <block type="text_append">
+    <value name="TEXT">
+      <shadow type="text"></shadow>
+    </value>
+  </block>
+  <block type="text_length">
+    <value name="VALUE">
+      <shadow type="text">
+        <field name="TEXT">abc</field>
+      </shadow>
+    </value>
+  </block>
+  <block type="text_isEmpty">
+    <value name="VALUE">
+      <shadow type="text">
+        <field name="TEXT"></field>
+      </shadow>
+    </value>
+  </block>
+  <block type="text_indexOf">
+    <value name="VALUE">
+      <block type="variables_get">
+        <field name="VAR">{textVariable}</field>
+      </block>
+    </value>
+    <value name="FIND">
+      <shadow type="text">
+        <field name="TEXT">abc</field>
+      </shadow>
+    </value>
+  </block>
+  <block type="text_charAt">
+    <value name="VALUE">
+      <block type="variables_get">
+        <field name="VAR">{textVariable}</field>
+      </block>
+    </value>
+  </block>
+  <block type="text_getSubstring">
+    <value name="STRING">
+      <block type="variables_get">
+        <field name="VAR">{textVariable}</field>
+      </block>
+    </value>
+  </block>
+  <block type="text_changeCase">
+    <value name="TEXT">
+      <shadow type="text">
+        <field name="TEXT">abc</field>
+      </shadow>
+    </value>
+  </block>
+  <block type="text_trim">
+    <value name="TEXT">
+      <shadow type="text">
+        <field name="TEXT">abc</field>
+      </shadow>
+    </value>
+  </block>
+  <block type="text_print">
+    <value name="TEXT">
+      <shadow type="text">
+        <field name="TEXT">abc</field>
+      </shadow>
+    </value>
+  </block>
+  <block type="text_prompt_ext">
+    <value name="TEXT">
+      <shadow type="text">
+        <field name="TEXT">abc</field>
+      </shadow>
+    </value>
+  </block>
+</category>
+<sep></sep>
+<category name="${BlocklyGames.getMsg('Games.catVariables', true)}" custom="VARIABLE"></category>
+<category name="${BlocklyGames.getMsg('Games.catProcedures', true)}" custom="PROCEDURE"></category>
+`;
+  return `<xml id="toolbox" xmlns="https://developers.google.com/blockly/xml">${xml}</xml>`;
+};
+
+/**
+ * Help dialogs for each level.
+ * @param {number} level Level 1-10.
+ * @param {boolean} isHtml True if served as raw HTML files.
+ * @returns {string} HTML.
+ * @private
+ */
+Turtle.html.helpDialogs_ = function(level, isHtml) {
+  let content = '';
+  switch (level) {
+    case 1:
+      content = BlocklyGames.getMsg('Turtle.helpText1', true) +
+          '<br><img src="index/square.gif" height=146 width=146 style="margin-bottom: -50px">';
+      break;
+    case 2:
+      content = BlocklyGames.getMsg('Turtle.helpText2', true);
+      break;
+    case 3:
+      content = BlocklyGames.getMsg('Turtle.helpText3a', true) +
+      '<div id="sampleHelp3" class="readonly"></div>' +
+      BlocklyGames.getMsg('Turtle.helpText3b', true);
+      break;
+    case 4:
+      content = BlocklyGames.getMsg('Turtle.helpText4a', true) +
+          '<div id="sampleHelp4" class="readonly"></div>' +
+      BlocklyGames.getMsg('Turtle.helpText4a', true);
+      break;
+    case 5:
+      content = BlocklyGames.getMsg('Turtle.helpText5', true);
+      break;
+    case 6:
+      content = BlocklyGames.getMsg('Turtle.helpText6', true);
+      break;
+    case 7:
+      content = BlocklyGames.getMsg('Turtle.helpText7', true);
+      break;
+    case 8:
+      content = BlocklyGames.getMsg('Turtle.helpText8', true);
+      break;
+    case 9:
+      content = BlocklyGames.getMsg('Turtle.helpText9', true);
+      break;
+    case 10:
+      content = BlocklyGames.getMsg('Turtle.helpText10', true);
+      if (!isHtml) {
+        content += '<br><br>' +
+            BlocklyGames.getMsg('Turtle.helpText10Reddit', true);
+      }
+      break;
+  }
+
+  let loopMsg = '';
+  if (level < 3) {
+    loopMsg = BlocklyGames.getMsg('Turtle.helpUseLoop3', true);
+  } else if (level < 4) {
+    loopMsg = BlocklyGames.getMsg('Turtle.helpUseLoop4', true);
+  }
+  return `
+<div id="help" class="dialogHiddenContent">
+  <div style="padding-bottom: 0.7ex">
+    ${content}
+  </div>
+  ${BlocklyGames.html.ok()}
+</div>
+
+<div id="helpToolbox" class="dialogHiddenContent">
+  <div><img src="index/help_left.png" class="mirrorImg" height=23 width=64></div>
+  ${BlocklyGames.getMsg('Turtle.helpToolbox', true)}
+</div>
+
+<div id="helpUseLoop" class="dialogHiddenContent">
+  <div style="padding-bottom: 0.7ex">
+    ${BlocklyGames.getMsg('Turtle.helpUseLoop', true)}
+    ${loopMsg}
+  </div>
+  ${BlocklyGames.html.ok()}
+</div>
 `;
 };

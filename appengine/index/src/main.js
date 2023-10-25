@@ -384,6 +384,22 @@ function loadButtonClick(e) {
 function initInterpreter(interpreter, globalObject) {
   // API
   let wrapper;
+
+  wrapper = function (id) {
+    return getX(id);
+  };
+  wrap('getX');
+
+  wrapper = function (id) {
+    return getY(id);
+  };
+  wrap('getY');
+
+  wrapper = function (id) {
+    return getDirection(id);
+  };
+  wrap('getDirection');
+
   wrapper = function (distance, id) {
     move(distance, id);
   };
@@ -548,6 +564,34 @@ function animate(id) {
     pause = Math.max(1, stepSpeed);
   }
 }
+
+
+
+/**
+ * Get X
+ * @param {string=} opt_id ID of block.
+ */
+function getX(opt_id) {
+  return turtleX;
+}
+
+/**
+ * Get Y
+ * @param {string=} opt_id ID of block.
+ */
+function getY(opt_id) {
+  return turtleY;
+}
+
+
+/**
+ * Get direction
+ * @param {string=} opt_id ID of block.
+ */
+function getDirection(opt_id) {
+  return -turtleHeading + 90;
+}
+
 
 /**
  * Move the turtle forward or backward.

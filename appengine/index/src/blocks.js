@@ -75,6 +75,34 @@ Turtle.Blocks.init = function() {
       });
 
   Blockly.defineBlocksWithJsonArray([
+
+    // Block for getting value of x
+    {
+      "type": "get_turtle_x",
+      "message0": "x",
+      "output": "Number",
+      "colour": HUE,
+      "tooltip": "Pega o valor de x da tartaruga"
+    },
+
+    // Block for getting value of y
+    {
+      "type": "get_turtle_y",
+      "message0": "y",
+      "output": "Number",
+      "colour": HUE,
+      "tooltip": "Pega o valor de y da tartaruga"
+    },
+
+    // Block for getting value of angle
+    {
+      "type": "get_turtle_direction",
+      "message0": "direção",
+      "output": "Number",
+      "colour": HUE,
+      "tooltip": "Pega o valor do ângulo de direção da tartaruga"
+    },
+
     // Block for moving forward or backwards (external distance).
     {
       "type": "turtle_move",
@@ -406,6 +434,25 @@ Turtle.Blocks.init = function() {
     },
   ]);
 };
+
+
+Blockly.JavaScript['get_turtle_x'] = function(block) {
+  // Generate JavaScript for moving forward or backwards (external distance).
+  return [`getX('block_id_${block.id}')`, Blockly.JavaScript.ORDER_FUNCTION_CALL];
+};
+
+
+Blockly.JavaScript['get_turtle_y'] = function(block) {
+  // Generate JavaScript for moving forward or backwards (external distance).
+  return [`getY('block_id_${block.id}')`, Blockly.JavaScript.ORDER_FUNCTION_CALL];
+};
+
+
+Blockly.JavaScript['get_turtle_direction'] = function(block) {
+  // Generate JavaScript for moving forward or backwards (external distance).
+  return [`getDirection('block_id_${block.id}')`, Blockly.JavaScript.ORDER_FUNCTION_CALL];
+};
+
 
 Blockly.JavaScript['turtle_move'] = function(block) {
   // Generate JavaScript for moving forward or backwards (external distance).

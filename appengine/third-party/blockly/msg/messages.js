@@ -41,7 +41,7 @@ Blockly.Msg.LOOPS_HUE = '120';
 Blockly.Msg.MATH_HUE = '230';
 /** @type {string} */
 /// {{Notranslate}} Hue value for all text blocks.
-Blockly.Msg.TEXTS_HUE = '160';
+Blockly.Msg.TEXTS_HUE = '100';
 /** @type {string} */
 /// {{Notranslate}} Hue value for all list blocks.
 Blockly.Msg.LISTS_HUE = '260';

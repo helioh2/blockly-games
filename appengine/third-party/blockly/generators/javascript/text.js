@@ -310,11 +310,10 @@ Blockly.JavaScript['text_print'] = function(block) {
   // Print statement.
   const msg = Blockly.JavaScript.valueToCode(block, 'TEXT',
   Blockly.JavaScript.ORDER_NONE) || "''";
-  const code = 'console.log(' + msg + ')'
-  return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL] ;
+  return 'alert(' + msg + ');\n';
 };
 
-Blockly.JavaScript['text_prompt'] = function(block) {
+Blockly.JavaScript['text_prompt_ext'] = function(block) {
   // Prompt function.
   let msg;
   if (block.getField('TEXT')) {
@@ -324,7 +323,7 @@ Blockly.JavaScript['text_prompt'] = function(block) {
     // External message.
     msg = Blockly.JavaScript.valueToCode(block, 'TEXT', Blockly.JavaScript.ORDER_NONE) || "''";
   }
-  let code = 'window.prompt(' + msg + ')';
+  let code = 'prompt(' + msg + ')';
   const toNumber = block.getFieldValue('TYPE') === 'NUMBER';
   if (toNumber) {
     code = 'Number(' + code + ')';

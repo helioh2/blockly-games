@@ -7,3 +7,4 @@ appengine/*/*/generated/
 build/third-party-downloads/
 /offline
 /node_modules
+.vscode/settings.json

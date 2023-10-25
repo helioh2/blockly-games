@@ -41,7 +41,7 @@ Blockly.defineBlocksWithJsonArray([
       },
     ],
     'output': 'String',
-    'style': 'text_blocks',
+    'colour': '100',
     'helpUrl': '%{BKY_TEXT_TEXT_HELPURL}',
     'tooltip': '%{BKY_TEXT_TEXT_TOOLTIP}',
     'extensions': ['text_quotes', 'parent_tooltip_when_inline'],
@@ -73,7 +73,7 @@ Blockly.defineBlocksWithJsonArray([
       },
     ],
     'output': 'String',
-    'style': 'text_blocks',
+    'colour': '100',
     'helpUrl': '%{BKY_TEXT_TEXT_HELPURL}',
     'tooltip': '%{BKY_TEXT_TEXT_TOOLTIP}',
     'extensions': ['parent_tooltip_when_inline'],
@@ -82,7 +82,7 @@ Blockly.defineBlocksWithJsonArray([
     'type': 'text_join',
     'message0': '',
     'output': 'String',
-    'style': 'text_blocks',
+    'colour': '100',
     'helpUrl': '%{BKY_TEXT_JOIN_HELPURL}',
     'tooltip': '%{BKY_TEXT_JOIN_TOOLTIP}',
     'mutator': 'text_join_mutator',
@@ -99,7 +99,7 @@ Blockly.defineBlocksWithJsonArray([
         'name': 'STACK',
       },
     ],
-    'style': 'text_blocks',
+    'colour': '100',
     'tooltip': '%{BKY_TEXT_CREATE_JOIN_TOOLTIP}',
     'enableContextMenu': false,
   },
@@ -108,7 +108,7 @@ Blockly.defineBlocksWithJsonArray([
     'message0': '%{BKY_TEXT_CREATE_JOIN_ITEM_TITLE_ITEM}',
     'previousStatement': null,
     'nextStatement': null,
-    'style': 'text_blocks',
+    'colour': '100',
     'tooltip': '%{BKY_TEXT_CREATE_JOIN_ITEM_TOOLTIP}',
     'enableContextMenu': false,
   },
@@ -128,7 +128,7 @@ Blockly.defineBlocksWithJsonArray([
     ],
     'previousStatement': null,
     'nextStatement': null,
-    'style': 'text_blocks',
+    'colour': '100',
     'extensions': ['text_append_tooltip'],
   },
   {
@@ -142,7 +142,7 @@ Blockly.defineBlocksWithJsonArray([
       },
     ],
     'output': 'Number',
-    'style': 'text_blocks',
+    'colour': '100',
     'tooltip': '%{BKY_TEXT_LENGTH_TOOLTIP}',
     'helpUrl': '%{BKY_TEXT_LENGTH_HELPURL}',
   },
@@ -157,7 +157,7 @@ Blockly.defineBlocksWithJsonArray([
       },
     ],
     'output': 'Boolean',
-    'style': 'text_blocks',
+    'colour': '100',
     'tooltip': '%{BKY_TEXT_ISEMPTY_TOOLTIP}',
     'helpUrl': '%{BKY_TEXT_ISEMPTY_HELPURL}',
   },
@@ -185,7 +185,7 @@ Blockly.defineBlocksWithJsonArray([
       },
     ],
     'output': 'Number',
-    'style': 'text_blocks',
+    'colour': '100',
     'helpUrl': '%{BKY_TEXT_INDEXOF_HELPURL}',
     'inputsInline': true,
     'extensions': ['text_indexOf_tooltip'],
@@ -212,7 +212,7 @@ Blockly.defineBlocksWithJsonArray([
       },
     ],
     'output': 'String',
-    'style': 'text_blocks',
+    'colour': '100',
     'helpUrl': '%{BKY_TEXT_CHARAT_HELPURL}',
     'inputsInline': true,
     'mutator': 'text_charAt_mutator',
@@ -236,7 +236,7 @@ Blockly.Blocks['text_getSubstring'] = {
       [Blockly.Msg['TEXT_GET_SUBSTRING_END_LAST'], 'LAST'],
     ];
     this.setHelpUrl(Blockly.Msg['TEXT_GET_SUBSTRING_HELPURL']);
-    this.setStyle('text_blocks');
+    this.setColour('100');
     this.appendValueInput('STRING')
       .setCheck('String')
       .appendField(Blockly.Msg['TEXT_GET_SUBSTRING_INPUT_IN_TEXT']);
@@ -360,7 +360,7 @@ Blockly.Blocks['text_changeCase'] = {
       [Blockly.Msg['TEXT_CHANGECASE_OPERATOR_TITLECASE'], 'TITLECASE'],
     ];
     this.setHelpUrl(Blockly.Msg['TEXT_CHANGECASE_HELPURL']);
-    this.setStyle('text_blocks');
+    this.setColour('100');
     this.appendValueInput('TEXT')
       .setCheck('String')
       .appendField(
@@ -386,7 +386,7 @@ Blockly.Blocks['text_trim'] = {
       [Blockly.Msg['TEXT_TRIM_OPERATOR_RIGHT'], 'RIGHT'],
     ];
     this.setHelpUrl(Blockly.Msg['TEXT_TRIM_HELPURL']);
-    this.setStyle('text_blocks');
+    this.setColour('100');
     this.appendValueInput('TEXT')
       .setCheck('String')
       .appendField(
@@ -416,7 +416,7 @@ Blockly.Blocks['text_print'] = {
       ],
       'previousStatement': null,
       'nextStatement': null,
-      'style': 'text_blocks',
+      'colour': '100',
       'tooltip': Blockly.Msg['TEXT_PRINT_TOOLTIP'],
       'helpUrl': Blockly.Msg['TEXT_PRINT_HELPURL'],
     });
@@ -471,7 +471,7 @@ Blockly.Blocks['text_prompt_ext'] = {
       [Blockly.Msg['TEXT_PROMPT_TYPE_NUMBER'], 'NUMBER'],
     ];
     this.setHelpUrl(Blockly.Msg['TEXT_PROMPT_HELPURL']);
-    this.setStyle('text_blocks');
+    this.setColour('100');
     const dropdown = Blockly.fieldRegistry.fromJson({
       type: 'field_dropdown',
       options: TYPES,
@@ -496,48 +496,48 @@ Blockly.Blocks['text_prompt_ext'] = {
 };
 
 
-Blockly.Blocks['text_prompt'] = {
-  ...PROMPT_COMMON,
-  /**
-   * Block for prompt function (internal message).
-   * The 'text_prompt_ext' block is preferred as it is more flexible.
-   */
-  init: function () {
-    this.mixin(QUOTE_IMAGE_MIXIN);
-    const TYPES = [
-      [Blockly.Msg['TEXT_PROMPT_TYPE_TEXT'], 'TEXT'],
-      [Blockly.Msg['TEXT_PROMPT_TYPE_NUMBER'], 'NUMBER'],
-    ];
+// Blockly.Blocks['text_prompt'] = {
+//   ...PROMPT_COMMON,
+//   /**
+//    * Block for prompt function (internal message).
+//    * The 'text_prompt_ext' block is preferred as it is more flexible.
+//    */
+//   init: function () {
+//     this.mixin(QUOTE_IMAGE_MIXIN);
+//     const TYPES = [
+//       [Blockly.Msg['TEXT_PROMPT_TYPE_TEXT'], 'TEXT'],
+//       [Blockly.Msg['TEXT_PROMPT_TYPE_NUMBER'], 'NUMBER'],
+//     ];
 
-    this.setHelpUrl(Blockly.Msg['TEXT_PROMPT_HELPURL']);
-    this.setStyle('text_blocks');
-    const dropdown = Blockly.fieldRegistry.fromJson({
-      type: 'field_dropdown',
-      options: TYPES,
-    });
-    dropdown.setValidator((newOp) => {
-      this.updateType_(newOp);
-      return undefined; // FieldValidators can't be void.  Use option as-is.
-    });
-    this.appendDummyInput()
-      .appendField(dropdown, 'TYPE')
-      .appendField(this.newQuote_(true))
-      .appendField(
-        Blockly.fieldRegistry.fromJson({
-          type: 'field_input',
-          text: '',
-        }),
-        'TEXT',
-      )
-      .appendField(this.newQuote_(false));
-    this.setOutput(true, 'String');
-    this.setTooltip(() => {
-      return this.getFieldValue('TYPE') === 'TEXT'
-        ? Blockly.Msg['TEXT_PROMPT_TOOLTIP_TEXT']
-        : Blockly.Msg['TEXT_PROMPT_TOOLTIP_NUMBER'];
-    });
-  },
-};
+//     this.setHelpUrl(Blockly.Msg['TEXT_PROMPT_HELPURL']);
+//     this.setColour('100');
+//     const dropdown = Blockly.fieldRegistry.fromJson({
+//       type: 'field_dropdown',
+//       options: TYPES,
+//     });
+//     dropdown.setValidator((newOp) => {
+//       this.updateType_(newOp);
+//       return undefined; // FieldValidators can't be void.  Use option as-is.
+//     });
+//     this.appendDummyInput()
+//       .appendField(dropdown, 'TYPE')
+//       .appendField(this.newQuote_(true))
+//       .appendField(
+//         Blockly.fieldRegistry.fromJson({
+//           type: 'field_input',
+//           text: '',
+//         }),
+//         'TEXT',
+//       )
+//       .appendField(this.newQuote_(false));
+//     this.setOutput(true, 'String');
+//     this.setTooltip(() => {
+//       return this.getFieldValue('TYPE') === 'TEXT'
+//         ? Blockly.Msg['TEXT_PROMPT_TOOLTIP_TEXT']
+//         : Blockly.Msg['TEXT_PROMPT_TOOLTIP_NUMBER'];
+//     });
+//   },
+// };
 
 
 Blockly.Blocks['text_count'] = {
@@ -561,7 +561,7 @@ Blockly.Blocks['text_count'] = {
       ],
       'output': 'Number',
       'inputsInline': true,
-      'style': 'text_blocks',
+      'colour': '100',
       'tooltip': Blockly.Msg['TEXT_COUNT_TOOLTIP'],
       'helpUrl': Blockly.Msg['TEXT_COUNT_HELPURL'],
     });
@@ -594,7 +594,7 @@ Blockly.Blocks['text_replace'] = {
       ],
       'output': 'String',
       'inputsInline': true,
-      'style': 'text_blocks',
+      'colour': '100',
       'tooltip': Blockly.Msg['TEXT_REPLACE_TOOLTIP'],
       'helpUrl': Blockly.Msg['TEXT_REPLACE_HELPURL'],
     });
@@ -617,7 +617,7 @@ Blockly.Blocks['text_reverse'] = {
       ],
       'output': 'String',
       'inputsInline': true,
-      'style': 'text_blocks',
+      'colour': '100',
       'tooltip': Blockly.Msg['TEXT_REVERSE_TOOLTIP'],
       'helpUrl': Blockly.Msg['TEXT_REVERSE_HELPURL'],
     });

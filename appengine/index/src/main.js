@@ -455,6 +455,19 @@ function initInterpreter(interpreter, globalObject) {
   };
   wrap('font');
 
+
+  // Define 'alert()' function.
+  wrapper = function alert(text) {
+    return window.alert(arguments.length ? text : '');
+  };
+  wrap('alert');
+
+  // Define 'prompt()' function.
+  wrapper = function prompt(text) {
+    return window.prompt(arguments.length ? text : 'What\'s up?');
+  };
+  wrap('prompt');
+
   function wrap(name) {
     interpreter.setProperty(globalObject, name,
       interpreter.createNativeFunction(wrapper, false));

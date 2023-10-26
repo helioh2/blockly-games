@@ -17,6 +17,9 @@ a:hover {
 .farSide {
   text-align: right;
 }
+.farLeft {
+  text-align: left;
+}
 #header_cta>* {
   vertical-align: middle;
 }

@@ -170,7 +170,8 @@ function init() {
   document.getElementById('loadButton')
     .addEventListener('change', loadButtonClick, false);
 
-  BlocklyGames.bindClick('codeButton', showCode);
+  BlocklyGames.bindClick('codeJsButton', showCodeJS);
+  BlocklyGames.bindClick('codePyButton', showCodePy);
 
   // Preload the win sound.
   BlocklyInterface.workspace.getAudioManager().load(
@@ -780,30 +781,56 @@ function submitToGallery() {
  * Show the user's code in raw JavaScript.
  * @param {!Event} e Mouse or touch event.
  */
-function showCode(e) {
+function showCodeJS(e) {
+  var origin = e.target;
+  var code = Blockly.JavaScript.workspaceToCode();
+  code = BlocklyCode.stripCode(code);
+  var pre = document.getElementById('containerCode');
+  pre.innerHTML = code;
+  if (typeof prettyPrintOne == 'function') {
+    code = pre.innerHTML;
+    code = prettyPrintOne(code, 'js');
+    pre.innerHTML = code;
+  }
+  var content = document.getElementById('dialogCode');
+  var style = {
+    width: '40%',
+    left: '30%',
+    top: '5em'
+  };
+  BlocklyDialogs.showDialog(content, null, true, true, style,
+    BlocklyDialogs.stopDialogKeyDown);
+  BlocklyDialogs.startDialogKeyDown();
+};
+
+
+
+/**
+ * Show the user's code in raw Python, compatible with Python Turtle.
+ * @param {!Event} e Mouse or touch event.
+ */
+function showCodePy(e) {
   //TODO
-  // var origin = e.target;
-  // var code = Blockly.JavaScript.workspaceToCode();
-  // code = BlocklyCode.stripCode(code);
-  // var pre = document.getElementById('containerCode');
-  // pre.textContent = code;
+  var origin = e.target;
+  var code = Blockly.Python.workspaceToCode();
+  code = BlocklyCode.stripCode(code);
+  var pre = document.getElementById('containerCode');
+  pre.innerHTML = code;
   // if (typeof prettyPrintOne == 'function') {
   //   code = pre.innerHTML;
   //   code = prettyPrintOne(code, 'js');
   //   pre.innerHTML = code;
   // }
-
-  // var content = document.getElementById('dialogCode');
-  // var style = {
-  //   width: '40%',
-  //   left: '30%',
-  //   top: '5em'
-  // };
-  // BlocklyApps.showDialog(content, origin, true, true, style,
-  //     BlocklyApps.stopDialogKeyDown);
-  // BlocklyApps.startDialogKeyDown();
+  var content = document.getElementById('dialogCode');
+  var style = {
+    width: '40%',
+    left: '30%',
+    top: '5em'
+  };
+  BlocklyDialogs.showDialog(content, null, true, true, style,
+    BlocklyDialogs.stopDialogKeyDown);
+  BlocklyDialogs.startDialogKeyDown();
 };
-
 
 
 

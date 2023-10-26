@@ -1,6 +1,7 @@
 button.primary {
   /* Can't use "text-align: start" due to IE. */
   text-align: left;
+  width: "100%";
 }
 html[dir="RTL"] button.primary {
   text-align: right;

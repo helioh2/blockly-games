@@ -53,7 +53,7 @@ if (location.host === 'blockly-games.appspot.com') {
   }
   window['BlocklyGamesLang'] = lang;
 
-  var debug = false;
+  var debug = true;
   try {
     debug = !!sessionStorage.getItem('debug');
     if (debug) {

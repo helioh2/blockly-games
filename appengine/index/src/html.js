@@ -66,12 +66,30 @@ ${BlocklyGames.html.headerBar(ij, BlocklyGames.getMsg('Games.turtle', true), '',
       <button id="resetButton" class="primary" style="display: none" title="${BlocklyGames.getMsg('Games.resetTooltip', true)}">
         <img src="common/1x1.gif" class="stop icon21"> ${BlocklyGames.getMsg('Games.resetProgram', true)}
       </button>
-      <button id="codeButton" class="primary" style="display: none" title="Mostra código em Javascript gerado.">
-        <img src="common/programming.svg">
+    </td>
+  </tr>
+  <tr style="align: center">
+    <td style="width: 100px; text-align: center">
+      <button id="codeJsButton" title="Mostra código em Javascript gerado.">
+        <img src="common/js.png" width="20%"> Gerar código JS
+      </button>
+    </td>
+    <td style="width: 100px; text-align: center">
+      <button id="codePyButton" title="Mostra código em Python gerado.">
+        <img src="common/python.png" width="20%"> Gerar código Python
       </button>
     </td>
   </tr>
 </table>
+
+<div id="dialogCode" class="dialogHiddenContent">
+  <pre id="containerCode"></pre>
+  ${BlocklyGames.html.ok()}
+
+  <div class="farLeft" style="padding: 1ex 3ex 0">
+    <button id="copyCodeJSButton" class="secondary">Copiar</button>
+  </div>
+</div>
 
 ${(ij.level === 10 && !ij.html) ? Turtle.html.gallery_(ij.lang) : ''}
 
@@ -84,8 +102,6 @@ ${BlocklyGames.html.abortDialog()}
 ${BlocklyGames.html.storageDialog()}
 
 ${Turtle.html.helpDialogs_(ij.level, ij.html)}
-
-<div id="dialogCode" class="dialogHiddenContent" hidden><pre id="containerCode"></pre></div>'
 
 `;
 };

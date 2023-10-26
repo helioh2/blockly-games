@@ -18,7 +18,7 @@ if (location.host === 'blockly-games.appspot.com') {
 
 (function() {
   // Application path.
-  var appName = 'index';
+  var appName = 'turtle';
 
   // Supported languages (consistent across all apps).
   window['BlocklyGamesLanguages'] = [
@@ -55,7 +55,7 @@ if (location.host === 'blockly-games.appspot.com') {
 
   var debug = true;
   try {
-    debug = !!sessionStorage.getItem('debug');
+    // debug = !!sessionStorage.getItem('debug');
     if (debug) {
       console.info('Loading uncompressed JavaScript.');
     }

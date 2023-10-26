@@ -8,10 +8,10 @@ REQUIRED_BINS = svn wget java python
 # Rules
 ##############################
 
-all: deps index
+all: deps turtle
 
-index: common
-	python build/compress.py index
+turtle: common
+	python build/compress.py turtle
 
 common:
 	@echo "Converting messages.js to JSON for Translatewiki."

@@ -34,6 +34,16 @@ goog.require('Blockly.JavaScript.math');
 goog.require('Blockly.JavaScript.procedures');
 goog.require('Blockly.JavaScript.texts');
 goog.require('Blockly.JavaScript.variables');
+goog.require('Blockly.Python');
+goog.require('Blockly.Python.colour');
+goog.require('Blockly.Python.lists');
+goog.require('Blockly.Python.texts');
+goog.require('Blockly.Python.logic');
+goog.require('Blockly.Python.loops');
+goog.require('Blockly.Python.math');
+goog.require('Blockly.Python.procedures');
+goog.require('Blockly.Python.texts');
+goog.require('Blockly.Python.variables');
 goog.require('BlocklyGames');
 
 
@@ -65,6 +75,8 @@ Turtle.Blocks.init = function() {
     [BlocklyGames.getMsg('Turtle.turnRight', false), 'turnRight'],
     [BlocklyGames.getMsg('Turtle.turnLeft', false), 'turnLeft'],
   ];
+
+  
 
   // Add arrows to turn options after prefix/suffix have been separated.
   Blockly.Extensions.register('turtle_turn_arrows',
@@ -550,3 +562,142 @@ Blockly.JavaScript['turtle_font'] = function(block) {
 
 Blockly.JavaScript['turtle_repeat_internal'] =
     Blockly.JavaScript['controls_repeat'];
+
+
+
+
+// Python generators:
+
+const MOVE_OPTIONS_PYTHON = {
+  'moveForward': "turtle.forward",
+  'moveBackward': "turtle.backward"
+}
+
+const TURN_OPTIONS_PYTHON = {
+  'turnLeft': "turtle.left",
+  'turnRight': "turtle.right"
+}
+
+const PEN_OPTIONS_PYTHON = {
+  "penUp": "turtle.up",
+  "penDown": "turtle.down"
+}
+
+const VISIBILITY_OPTIONS_PYTHON = {
+  "hideTurtle": "hideturtle",
+  "showTurtle": "showturtle"
+}
+
+
+Blockly.Python['get_turtle_x'] = function(block) {
+  // Generate Python for moving forward or backwards (external distance).
+  return "turtle.xcor()";
+};
+
+
+Blockly.Python['get_turtle_y'] = function(block) {
+  // Generate Python for moving forward or backwards (external distance).
+  return "turtle.ycor()";
+};
+
+
+Blockly.Python['get_turtle_direction'] = function(block) {
+  // Generate Python for moving forward or backwards (external distance).
+  return "turtle.heading()" ;
+};
+
+
+Blockly.Python['turtle_move'] = function(block) {
+  // Generate Python for moving forward or backwards (external distance).
+  const value = Blockly.Python.valueToCode(block, 'VALUE',
+  Blockly.Python.ORDER_NONE) || '0';
+  return `${MOVE_OPTIONS_PYTHON[block.getFieldValue('DIR')]}(${value})\n`;
+};
+
+
+Blockly.Python['turtle_goto'] = function(block) {
+  // Generate Python for moving forward or backwards (external distance).
+  const valueX = Blockly.Python.valueToCode(block, 'VALUE_X',
+      Blockly.Python.ORDER_NONE) || '0';
+  const valueY = Blockly.Python.valueToCode(block, 'VALUE_Y',
+      Blockly.Python.ORDER_NONE) || '0';
+  return `turtle.goto(${valueX}, ${valueY},  'block_id_${block.id}');\n`;
+};
+
+
+
+Blockly.Python['turtle_move_internal'] = function(block) {
+  // Generate Python for moving forward or backwards (internal distance).
+  const value = Number(block.getFieldValue('VALUE'));
+  const option = block.getFieldValue('DIR')
+  return `${MOVE_OPTIONS_PYTHON[option]}(${value})\n`;
+};
+
+
+
+Blockly.Python['turtle_direction'] = function(block) {
+  // Generate Python for moving forward or backwards (external distance).
+  const value = Blockly.Python.valueToCode(block, 'VALUE',
+      Blockly.Python.ORDER_NONE) || '0';
+  return `turtle.setheading(${value})\n`;
+};
+
+
+
+Blockly.Python['turtle_turn'] = function(block) {
+  // Generate JavaScript for turning left or right (external angle).
+  const value = Blockly.Python.valueToCode(block, 'VALUE',
+      Blockly.Python.ORDER_NONE) || '0';
+  const functionName = "";
+  return `${TURN_OPTIONS_PYTHON[block.getFieldValue('DIR')]}(${value})\n`;
+};
+
+Blockly.Python['turtle_turn_internal'] = function(block) {
+  // Generate Python for turning left or right (internal angle).
+  const value = Number(block.getFieldValue('VALUE'));
+  return `${TURN_OPTIONS_PYTHON[block.getFieldValue('DIR')]}(${value})\n`;
+};
+
+Blockly.Python['turtle_width'] = function(block) {
+  // Generate Python for setting the width.
+  const width = Blockly.Python.valueToCode(block, 'WIDTH',
+      Blockly.Python.ORDER_NONE) || '1';
+  return `turtle.width(${width})\n`;
+};
+
+Blockly.Python['turtle_pen'] = function(block) {
+  // Generate Python for pen up/down.
+  return `${PEN_OPTIONS_PYTHON[block.getFieldValue('PEN')]}()\n`;
+};
+
+Blockly.Python['turtle_colour'] = function(block) {
+  // Generate Python for setting the colour (external colour).
+  const colour = Blockly.Python.valueToCode(block, 'COLOUR',
+      Blockly.Python.ORDER_NONE) || '\'#FFFFFF\'';
+  return `turtle.color(${colour})\n`;
+};
+
+Blockly.Python['turtle_colour_internal'] = function(block) {
+  // Generate Python for setting the colour (internal colour).
+  const colour = Blockly.Python.quote_(block.getFieldValue('COLOUR'));
+  return `turtle.color(${colour})\n`;
+};
+
+Blockly.Python['turtle_visibility'] = function(block) {
+  // Generate Python for changing turtle visibility.
+  return `${VISIBILITY_OPTIONS_PYTHON[block.getFieldValue('VISIBILITY')]}()\n`;
+};
+
+Blockly.Python['turtle_print'] = function(block) {
+  // Generate Python for printing text.
+  const text = String(Blockly.Python.valueToCode(block, 'TEXT',
+      Blockly.Python.ORDER_NONE) || '\'\'');
+  return `print(${text})\n`;
+};
+
+Blockly.Python['turtle_font'] = function(block) {
+  return "";
+};
+
+Blockly.Python['turtle_repeat_internal'] =
+    Blockly.Python['controls_repeat'];

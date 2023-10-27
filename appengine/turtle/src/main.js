@@ -579,7 +579,7 @@ function animate(id) {
  * @param {string=} opt_id ID of block.
  */
 function getX(opt_id) {
-  return turtleX;
+  return turtleX - WIDTH/2;
 }
 
 /**
@@ -587,7 +587,7 @@ function getX(opt_id) {
  * @param {string=} opt_id ID of block.
  */
 function getY(opt_id) {
-  return turtleY;
+  return -(turtleY - HEIGHT/2);
 }
 
 

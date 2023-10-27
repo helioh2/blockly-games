@@ -591,19 +591,19 @@ const VISIBILITY_OPTIONS_PYTHON = {
 
 Blockly.Python['get_turtle_x'] = function(block) {
   // Generate Python for moving forward or backwards (external distance).
-  return "turtle.xcor()";
+  return ["turtle.xcor()", Blockly.Python.ORDER_NONE];
 };
 
 
 Blockly.Python['get_turtle_y'] = function(block) {
   // Generate Python for moving forward or backwards (external distance).
-  return "turtle.ycor()";
+  return ["turtle.ycor()", Blockly.Python.ORDER_NONE];
 };
 
 
 Blockly.Python['get_turtle_direction'] = function(block) {
   // Generate Python for moving forward or backwards (external distance).
-  return "turtle.heading()" ;
+  return ["turtle.heading()", Blockly.Python.ORDER_NONE];
 };
 
 

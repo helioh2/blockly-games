@@ -83,7 +83,7 @@ ${BlocklyGames.html.headerBar(ij, BlocklyGames.getMsg('Games.turtle', true), '',
 </table>
 
 <div id="dialogCode" class="dialogHiddenContent">
-  <pre id="containerCode"></pre>
+  <pre id="containerCodeGenerated"></pre>
   ${BlocklyGames.html.ok()}
 
   <div class="farLeft" style="padding: 1ex 3ex 0">

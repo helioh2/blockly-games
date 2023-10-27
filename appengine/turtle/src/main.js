@@ -33,6 +33,8 @@ goog.require('Turtle.Blocks');
 goog.require('Turtle.html');
 
 
+
+
 BlocklyGames.storageName = 'turtle';
 
 const HEIGHT = 400;
@@ -784,10 +786,11 @@ function submitToGallery() {
  */
 function showCodeJS(e) {
   var origin = e.target;
-  var code = Blockly.JavaScript.workspaceToCode();
+  var code = Blockly.JavaScript.workspaceToCode(BlocklyInterface.workspace);
   code = BlocklyCode.stripCode(code);
-  var pre = document.getElementById('containerCode');
-  pre.innerHTML = code;
+  var pre = document.getElementById('containerCodeGenerated');
+
+  pre.textContent = code;
   if (typeof prettyPrintOne == 'function') {
     code = pre.innerHTML;
     code = prettyPrintOne(code, 'js');
@@ -799,7 +802,7 @@ function showCodeJS(e) {
     left: '30%',
     top: '5em'
   };
-  BlocklyDialogs.showDialog(content, null, true, true, style,
+  BlocklyDialogs.showDialog(content, origin, true, true, style,
     BlocklyDialogs.stopDialogKeyDown);
   BlocklyDialogs.startDialogKeyDown();
 };
@@ -815,20 +818,21 @@ function showCodePy(e) {
   var origin = e.target;
   var code = Blockly.Python.workspaceToCode();
   code = BlocklyCode.stripCode(code);
-  var pre = document.getElementById('containerCode');
+  var pre = document.getElementById('containerCodeGenerated');
   pre.innerHTML = code;
-  // if (typeof prettyPrintOne == 'function') {
-  //   code = pre.innerHTML;
-  //   code = prettyPrintOne(code, 'js');
-  //   pre.innerHTML = code;
-  // }
+  pre.textContent = code;
+  if (typeof prettyPrintOne == 'function') {
+    code = pre.innerHTML;
+    code = prettyPrintOne(code, 'py');
+    pre.innerHTML = code;
+  }
   var content = document.getElementById('dialogCode');
   var style = {
     width: '40%',
     left: '30%',
     top: '5em'
   };
-  BlocklyDialogs.showDialog(content, null, true, true, style,
+  BlocklyDialogs.showDialog(content, origin, false, true, style,
     BlocklyDialogs.stopDialogKeyDown);
   BlocklyDialogs.startDialogKeyDown();
 };

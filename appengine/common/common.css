@@ -43,7 +43,7 @@ html[dir="RTL"] .farSide {
   background-color: #ddd;
   color: #000;
 }
-#containerCode {
+#containerCodeGenerated {
   direction: ltr;
   background-color: #eee;
   padding: 5px;

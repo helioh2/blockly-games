@@ -87,7 +87,7 @@ ${BlocklyGames.html.headerBar(ij, BlocklyGames.getMsg('Games.turtle', true), '',
   ${BlocklyGames.html.ok()}
 
   <div class="farLeft" style="padding: 1ex 3ex 0">
-    <button id="copyCodeJSButton" class="secondary">Copiar</button>
+    <button id="copyCodeButton" class="secondary">Copiar</button>
   </div>
 </div>
 

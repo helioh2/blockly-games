@@ -176,6 +176,8 @@ function init() {
   BlocklyGames.bindClick('codeJsButton', showCodeJS);
   BlocklyGames.bindClick('codePyButton', showCodePy);
 
+  BlocklyGames.bindClick('copyCodeButton', copyCode);
+  
   // Preload the win sound.
   BlocklyInterface.workspace.getAudioManager().load(
     ['index/win.mp3', 'index/win.ogg'], 'win');
@@ -373,6 +375,7 @@ function loadButtonClick(e) {
   reader.onload = function (e) {
     let contents = e.target.result;
     let xml = Blockly.Xml.textToDom(contents);
+    BlocklyInterface.workspace.clear();
     Blockly.Xml.domToWorkspace(xml, BlocklyInterface.workspace);
   };
   reader.readAsText(file);
@@ -780,50 +783,24 @@ function submitToGallery() {
 }
 
 
-/**
- * Show the user's code in raw JavaScript.
- * @param {!Event} e Mouse or touch event.
- */
-function showCodeJS(e) {
-  var origin = e.target;
-  var code = Blockly.JavaScript.workspaceToCode(BlocklyInterface.workspace);
-  code = BlocklyCode.stripCode(code);
-  var pre = document.getElementById('containerCodeGenerated');
-
-  pre.textContent = code;
-  if (typeof prettyPrintOne == 'function') {
-    code = pre.innerHTML;
-    code = prettyPrintOne(code, 'js');
-    pre.innerHTML = code;
-  }
-  var content = document.getElementById('dialogCode');
-  var style = {
-    width: '40%',
-    left: '30%',
-    top: '5em'
-  };
-  BlocklyDialogs.showDialog(content, origin, true, true, style,
-    BlocklyDialogs.stopDialogKeyDown);
-  BlocklyDialogs.startDialogKeyDown();
-};
-
-
 
 /**
- * Show the user's code in raw Python, compatible with Python Turtle.
+ * Show the user's code in some language
+ * langAbbrev is defined as 'py' or 'js'.
+ * genModule is Blockly.Python or Blockly.Javascript
  * @param {!Event} e Mouse or touch event.
  */
-function showCodePy(e) {
-  //TODO
+function showCode(e, langAbbrev, genModule, beforeCode="", afterCode="") {
   var origin = e.target;
-  var code = Blockly.Python.workspaceToCode();
+  var code = genModule.workspaceToCode();
   code = BlocklyCode.stripCode(code);
+  code = beforeCode + code + afterCode
   var pre = document.getElementById('containerCodeGenerated');
   pre.innerHTML = code;
   pre.textContent = code;
   if (typeof prettyPrintOne == 'function') {
     code = pre.innerHTML;
-    code = prettyPrintOne(code, 'py');
+    code = prettyPrintOne(code, langAbbrev);
     pre.innerHTML = code;
   }
   var content = document.getElementById('dialogCode');
@@ -837,6 +814,34 @@ function showCodePy(e) {
   BlocklyDialogs.startDialogKeyDown();
 };
 
+/**
+ * Show the user's code in raw JavaScript.
+ * @param {!Event} e Mouse or touch event.
+ */
+function showCodeJS(e) {
+  showCode(e, "js", Blockly.JavaScript)
+};
+
+/**
+ * Show the user's code in raw JavaScript.
+ * @param {!Event} e Mouse or touch event.
+ */
+function showCodePy(e) {
+  showCode(e, "py", Blockly.Python, 
+  "import turtle\n\n", "\n\nturtle.exitonclick()");
+};
+
+
+
+
+/**
+ * Copy code do clipboard.
+ * @param {!Event} e Mouse or touch event.
+ */
+function copyCode() {
+  var pre = document.getElementById('containerCodeGenerated');
+  navigator.clipboard.writeText(pre.textContent);
+}
 
 
 BlocklyGames.callWhenLoaded(init);

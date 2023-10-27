@@ -68,12 +68,14 @@ ${BlocklyGames.html.headerBar(ij, BlocklyGames.getMsg('Games.turtle', true), '',
       </button>
     </td>
   </tr>
-  <tr style="align: center">
+
+  <tr style="align: center;">
     <td style="width: 100px; text-align: center">
       <button id="codeJsButton" title="Mostra código em Javascript gerado.">
         <img src="common/js.png" width="20%"> Gerar código JS
       </button>
     </td>
+    <td></td>
     <td style="width: 100px; text-align: center">
       <button id="codePyButton" title="Mostra código em Python gerado.">
         <img src="common/python.png" width="20%"> Gerar código Python

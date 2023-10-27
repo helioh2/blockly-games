@@ -86,10 +86,20 @@ ${BlocklyGames.html.headerBar(ij, BlocklyGames.getMsg('Games.turtle', true), '',
 
 <div id="dialogCode" class="dialogHiddenContent">
   <pre id="containerCodeGenerated"></pre>
-  ${BlocklyGames.html.ok()}
+  
 
-  <div class="farLeft" style="padding: 1ex 3ex 0">
-    <button id="copyCodeButton" class="secondary">Copiar</button>
+  <table>
+  <tr>
+  <td> 
+    <div class="farLeft" style="padding: 1ex 3ex 0"> 
+    <button id="copyCodeButton"><img src="common/copy.png" width="50%"> Copiar</button>
+    </div>
+    </td>
+  <td style="width:90%"> ${BlocklyGames.html.ok()} </td>
+    
+  </tr>
+  </table>
+    
   </div>
 </div>
 

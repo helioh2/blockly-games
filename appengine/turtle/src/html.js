@@ -461,7 +461,7 @@ Turtle.html.toolbox_ = function(level) {
   <block type="text_indexOf">
     <value name="VALUE">
       <block type="variables_get">
-        <field name="VAR">{textVariable}</field>
+        <field name="VAR">text</field>
       </block>
     </value>
     <value name="FIND">
@@ -473,14 +473,14 @@ Turtle.html.toolbox_ = function(level) {
   <block type="text_charAt">
     <value name="VALUE">
       <block type="variables_get">
-        <field name="VAR">{textVariable}</field>
+        <field name="VAR">text</field>
       </block>
     </value>
   </block>
   <block type="text_getSubstring">
     <value name="STRING">
       <block type="variables_get">
-        <field name="VAR">{textVariable}</field>
+        <field name="VAR">text</field>
       </block>
     </value>
   </block>

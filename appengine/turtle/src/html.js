@@ -23,8 +23,10 @@ goog.require('BlocklyGames.html');
  * @returns {string} HTML.
  */
 Turtle.html.start = function(ij) {
+  const changeWidthForm = `
+  `
   return `
-${BlocklyGames.html.headerBar(ij, BlocklyGames.getMsg('Games.turtle', true), '', true, true, '')}
+${BlocklyGames.html.headerBar(ij, BlocklyGames.getMsg('Games.turtle', true), '', false, false, changeWidthForm)}
 
 <div id="visualization">
   <canvas id="scratch" width=400 height=400 style="display: none"></canvas>

@@ -37,8 +37,8 @@ goog.require('Turtle.html');
 
 BlocklyGames.storageName = 'turtle';
 
-const HEIGHT = 400;
-const WIDTH = 400;
+// const HEIGHT = 400;
+// const WIDTH = 400;
 
 /**
  * PID of animation task currently executing.
@@ -166,6 +166,18 @@ function init() {
   BlocklyGames.bindClick('codePyButton', showCodePy);
 
   BlocklyGames.bindClick('copyCodeButton', copyCode);
+
+  const updateDisplayDimensions = () => {
+    document.getElementById("display").width = document.getElementById("largura").value;
+    document.getElementById("display").height = document.getElementById("altura").value;
+  }
+
+  updateDisplayDimensions();
+
+  dimensionsForm.addEventListener("submit", (ev) => {
+    ev.preventDefault();
+    updateDisplayDimensions();
+  })
   
   // Preload the win sound.
   BlocklyInterface.workspace.getAudioManager().load(
@@ -203,8 +215,10 @@ function nextNode(node) {
  */
 function reset() {
   // Starting location and heading of the turtle.
-  turtleX = HEIGHT / 2;
-  turtleY = WIDTH / 2;
+  const width = Number(document.getElementById("largura").value);
+  const height = Number(document.getElementById("altura").value);
+  turtleX = height / 2;
+  turtleY = width / 2;
   turtleHeading = 0;
   isPenDown = true;
   visible = true;
@@ -568,7 +582,8 @@ function animate(id) {
  * @param {string=} opt_id ID of block.
  */
 function getX(opt_id) {
-  return turtleX - WIDTH/2;
+  const width = Number(document.getElementById("largura").value);
+  return turtleX - width/2;
 }
 
 /**
@@ -576,7 +591,8 @@ function getX(opt_id) {
  * @param {string=} opt_id ID of block.
  */
 function getY(opt_id) {
-  return -(turtleY - HEIGHT/2);
+  const height = Number(document.getElementById("altura").value);
+  return -(turtleY - height/2);
 }
 
 

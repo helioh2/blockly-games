@@ -68,8 +68,20 @@ BlocklyGames.html.headerBar = function(ij, appName, levelLinkSuffix,
   `;
 
   return `
+
 <table width="100%">
   <tr>
+  
+    <td class="farLeft"> 
+    <h3>Dimensões da tela:</h3>
+    <form id="dimensionsForm" style="align: left;">
+    <label for="largura"/>Largura:</label>
+    <input name="largura" id="largura" type="number" value="400" placeholder="Largura"/>
+    <label for="largura"/>Altura:</label>
+    <input name="altura" id="altura" type="number" value="400" placeholder="Altura"/>
+    <input type="submit" value="Alterar"/>
+    </form>
+  </td>
     <td id="header_cta" class="farSide">
       ${projectName}
       ${saveButton}

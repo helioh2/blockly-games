@@ -67,10 +67,17 @@ BlocklyGames.html.headerBar = function(ij, appName, levelLinkSuffix,
     
   `;
 
+  let cartesianModeOption = `
+  &nbsp;
+  <input type="checkbox" id="cartesianModeOption" value="cartesiano"/>
+  <label for="cartesianModeOption">Modo cartesiano</label> 
+  `
+
   return `
 <table width="100%">
   <tr>
     <td id="header_cta" class="farSide">
+      ${cartesianModeOption}
       ${projectName}
       ${saveButton}
       ${loadButton}

@@ -78,12 +78,17 @@ let turtleX;
 let turtleY;
 let turtleHeading;
 let isPenDown;
+let cartesianPlane;
+let cartesianModeOption;
 
 /**
  * Initialize Blockly and the turtle.  Called on page load.
  */
 function init() {
   Turtle.Blocks.init();
+
+  cartesianPlane = new Image();
+  cartesianPlane.src = "turtle/plano_cartesiano.png";
 
   // Render the HTML.
   document.body.innerHTML = Turtle.html.start(
@@ -153,6 +158,9 @@ function init() {
 
   ctxDisplay = BlocklyGames.getElementById('display').getContext('2d');
   ctxScratch = BlocklyGames.getElementById('scratch').getContext('2d');
+
+  cartesianModeOption = BlocklyGames.getElementById("cartesianModeOption");
+
   reset();
 
   BlocklyGames.bindClick('runButton', runButtonClick);
@@ -166,6 +174,17 @@ function init() {
   BlocklyGames.bindClick('codePyButton', showCodePy);
 
   BlocklyGames.bindClick('copyCodeButton', copyCode);
+  
+
+  BlocklyGames.bindClick('cartesianModeOption', toggleCartesianMode);
+
+  
+
+  
+
+
+
+
   
   // Preload the win sound.
   BlocklyInterface.workspace.getAudioManager().load(
@@ -228,10 +247,14 @@ function reset() {
  * Copy the scratch canvas to the display canvas. Add a turtle marker.
  */
 function display() {
-  // Clear the display with black.
+
+  if (cartesianModeOption.checked) {
+    ctxDisplay.drawImage(cartesianPlane, 0, 0, WIDTH, HEIGHT)
+  } else {
   ctxDisplay.beginPath();
   ctxDisplay.rect(0, 0, ctxDisplay.canvas.width, ctxDisplay.canvas.height);
   ctxDisplay.fillStyle = '#FFF';
+  }
   ctxDisplay.fill();
 
   // Draw the user layer.
@@ -568,6 +591,9 @@ function animate(id) {
  * @param {string=} opt_id ID of block.
  */
 function getX(opt_id) {
+  if (cartesianModeOption.checked) {
+    return Math.floor((turtleX - WIDTH/2) / (HEIGHT/120));
+  }
   return turtleX - WIDTH/2;
 }
 
@@ -576,6 +602,9 @@ function getX(opt_id) {
  * @param {string=} opt_id ID of block.
  */
 function getY(opt_id) {
+  if (cartesianModeOption.checked) {
+    return Math.floor(-(turtleY - HEIGHT/2) / (HEIGHT/120));
+  }
   return -(turtleY - HEIGHT/2);
 }
 
@@ -598,6 +627,10 @@ function move(distance, opt_id) {
   let xInic = turtleX;
   let yInic = turtleY;
   let bump = 0;
+
+  if (cartesianModeOption.checked) {
+    distance *= (HEIGHT/120);   // TODO: apply idea to make a dynamic scale for the cartesian plane
+  }
 
   const radians = Blockly.utils.math.toRadians(turtleHeading);
   let xFinal = turtleX + distance * Math.sin(radians);
@@ -656,6 +689,11 @@ function goto(x, y, opt_id) {
     ctxScratch.moveTo(turtleX, turtleY);
   }
   let bump = 0;
+
+  if (cartesianModeOption.checked) {
+    x *= (HEIGHT/120);
+    y *= (HEIGHT/120);
+  }
   turtleX = x + BlocklyGames.getElementById("display").width / 2;
   turtleY = BlocklyGames.getElementById("display").height / 2 - y;
 
@@ -835,6 +873,11 @@ function showCodePy(e) {
 function copyCode() {
   var pre = document.getElementById('containerCodeGenerated');
   navigator.clipboard.writeText(pre.textContent);
+}
+
+
+function toggleCartesianMode() {
+  display();
 }
 
 
